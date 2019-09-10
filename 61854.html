@@ -1,0 +1,277 @@
+<!DOCTYPE html>
+<html lang="en">
+<head><meta name="generator" content="Hexo 3.9.0">
+  <meta charset="utf-8">
+  
+  
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+  <title>
+    Centos7.6部署前后端分离项目 |
+    
+    Suhang Blog</title>
+  
+    <link rel="shortcut icon" href="/favicon.ico">
+  
+  <link rel="stylesheet" href="/css/style.css">
+  
+    <link rel="stylesheet" href="/fancybox/jquery.fancybox.min.css">
+  
+  <script src="/js/pace.min.js"></script>
+</head></html>
+<body>
+<main class="content">
+  <section class="outer">
+  <article id="post-Centos7.6部署前后端分离项目" class="article article-type-post" itemscope itemprop="blogPost" data-scroll-reveal>
+  
+  <div class="article-inner">
+    
+      <header class="article-header">
+        
+  
+    <h1 class="article-title" itemprop="name">
+      Centos7.6部署前后端分离项目
+    </h1>
+  
+  
+
+
+
+
+      </header>
+    
+
+    
+      <div class="article-meta">
+        <a href="/61854.html" class="article-date">
+  <time datetime="2019-01-16T00:00:00.000Z" itemprop="datePublished">2019-01-16</time>
+</a>
+        
+  <div class="article-category">
+    <a class="article-category-link" href="/categories/Centos7/">Centos7</a>
+  </div>
+
+      </div>
+    
+
+    
+      
+    <div class="tocbot"></div>
+
+
+
+
+
+    
+
+    <div class="article-entry" itemprop="articleBody">
+      
+        
+        
+          <h4 id="在centos7-6上部署前后端分离项目Nginx反向代理vue-js2-6-Tornado5-1-1，使用supervisor统一管理服务"><a href="#在centos7-6上部署前后端分离项目Nginx反向代理vue-js2-6-Tornado5-1-1，使用supervisor统一管理服务" class="headerlink" title="在centos7.6上部署前后端分离项目Nginx反向代理vue.js2.6+Tornado5.1.1，使用supervisor统一管理服务"></a>在centos7.6上部署前后端分离项目Nginx反向代理vue.js2.6+Tornado5.1.1，使用supervisor统一管理服务</h4><p>这一次使用vue.js+tornado的组合来部署前后端分离的web项目，vue.js不用说了，前端当红炸子鸡，泛用性非常广，无论是单页应用，还是混合式开发app，亦或是微信小程序开发，样样得心应手，tornado最近的风头有点被新锐框架sanic抢走了，但是作为老牌的异步非阻塞框架，其内置了支持epoll/kqueue 等高效网络库，而具备了处理高并发的能力并且开发效率也不低，这一次tornado作为承载后端压力的角色。</p>
+<p>首先部署前端，将测试好的vue.js2.6项目打包，值得一提的是，在生产环境并不需要node.js服务，因为利用vue.js的特性可以对前端页面进行打包，使其成为一个纯静态页包，上线后利用nginx对其代理即可，既方便又安全。在项目目录下执行npm run build命令，在执行之前，先把conifg目录下index.js中的bulid配置../dist改成./dist<br><img src="/images/20190822.png" alt><br> 执行命令后，会在项目的config目录下的dist目录生成静态页，将dist目录上传到服务器的/root目录下</p>
+<pre><code>运行 chmod 755 /root/dist 对项目文件授权
+
+然后，在线上安装nginx</code></pre><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">#设置源</span></span><br><span class="line">sudo rpm -Uvh http://nginx.org/packages/centos/<span class="number">7</span>/noarch/RPMS/nginx-release-centos<span class="number">-7</span><span class="number">-0.</span>el7.ngx.noarch.rpm</span><br><span class="line"></span><br><span class="line"><span class="comment">#安装</span></span><br><span class="line">yum install -y nginx</span><br><span class="line"></span><br><span class="line"><span class="comment">#启动服务</span></span><br><span class="line">systemctl start nginx.service</span><br></pre></td></tr></table></figure>
+
+<p>服务器需要暴露80端口，此时，测试一下，看看能否显示欢迎页<br><img src="/images/201908221.png" alt><br>没有问题，这时修改一下nginx 配置文件 vim /etc/nginx/conf.d/default.conf  增加下面的配置，这里前端服务默认监听80端口</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br></pre></td><td class="code"><pre><span class="line">server &#123;</span><br><span class="line">    listen       <span class="number">80</span>;</span><br><span class="line">    server_name  localhost;</span><br><span class="line"></span><br><span class="line">    access_log      /root/md_vue_access.log;</span><br><span class="line">    error_log       /root/md_vue_error.log;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">    client_max_body_size <span class="number">75</span>M;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">    location / &#123;</span><br><span class="line"></span><br><span class="line">        root /root/dist;</span><br><span class="line">        index index.html;</span><br><span class="line">        try_files $uri $uri/ /index.html;</span><br><span class="line"></span><br><span class="line">    &#125;</span><br><span class="line">    </span><br><span class="line">    error_log    /root/dist/error.log    error;</span><br><span class="line"></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">#继续修改配置</span></span><br><span class="line">vim /etc/nginx/nginx.conf</span><br><span class="line">将第一行改为 user root;</span><br></pre></td></tr></table></figure>
+
+<p>改好后,重启nginx服务</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">systemctl restart nginx.service</span><br><span class="line">或</span><br><span class="line">systemctl reload nginx.service</span><br></pre></td></tr></table></figure>
+
+<p>每次修改nginx配置一定要重启服务，否则修改不会生效<br>访问80端口，看看效果</p>
+<p>将tornado项目上传到/root/mytornado下，修改项目权限:chmod -R 755 /root/mytornado 然后将项目的debug模式关闭，并且修改端口号为8001，同时阿里云暴露8001端口，进行项目根目录，启动服务:python3 server.py，检查一下</p>
+<p>没有问题，此时修改nginx配置文件，用nginx对tornado进行反向代理，新建一个配置文件</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">vim /etc/nginx/conf.d/tornado.conf</span><br></pre></td></tr></table></figure>
+
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br></pre></td><td class="code"><pre><span class="line">upstream tornado &#123;</span><br><span class="line">    server <span class="number">127.0</span><span class="number">.0</span><span class="number">.1</span>:<span class="number">8001</span>;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">server &#123;</span><br><span class="line">    listen   <span class="number">8000</span>;</span><br><span class="line">    root /root/mytornado;</span><br><span class="line">    index server.py index.html;</span><br><span class="line"></span><br><span class="line">    server_name server;</span><br><span class="line"></span><br><span class="line">        <span class="comment"># 静态文件直接由Nginx处理</span></span><br><span class="line">    location /static/&#123;</span><br><span class="line">        alias /root/mytornado/static/;</span><br><span class="line">        expires <span class="number">24</span>h;</span><br><span class="line">    &#125;</span><br><span class="line">    location /&#123;</span><br><span class="line">        proxy_pass_header Server;</span><br><span class="line">        proxy_set_header Host $http_host;</span><br><span class="line">        proxy_redirect off;</span><br><span class="line">        proxy_set_header X-Real-IP $remote_addr;</span><br><span class="line">        <span class="comment"># 把请求方向代理传给tornado服务器，负载均衡</span></span><br><span class="line">        proxy_pass http://tornado;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>该配置的意思就是由nginx监听8000端口，并且将请求反向代理至tornado服务，这里我们只起了一个8001的服务，还可以启动更多，这就是传统意义上的负载均衡</p>
+<p>重启一下nginx</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">systemctl restart nginx.service</span><br><span class="line">或</span><br><span class="line">systemctl reload nginx.service</span><br></pre></td></tr></table></figure>
+
+<p>重启完毕，访问服务器的8000端口</p>
+<p>最后，每次手动在命令行启动应用是比较麻烦的，我们还需要一个能够方便的管理服务进程的工具，包括自动重启进程等，而Supervisor的作用在这里就可以体现了。我们使用它来管理这个Tornado web server相关的进程</p>
+<pre><code>安装supervisor</code></pre><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">yum install epel-release</span><br><span class="line">yum install -y supervisor</span><br></pre></td></tr></table></figure>
+
+<p>生成配置文件</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">supervisord -c /etc/supervisord.conf</span><br></pre></td></tr></table></figure>
+
+<p>修改配置文件<br>    vim /etc/supervisord.conf  将下面几行注释解开</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">[inet_http_server]         ; inet (TCP) server disabled by default</span><br><span class="line">port=*:<span class="number">9001</span>        ; (ip_address:port specifier, *:port <span class="keyword">for</span> all iface)</span><br><span class="line">username=user              ; (default <span class="keyword">is</span> no username (open server))</span><br><span class="line">password=<span class="number">123</span>               ; (default <span class="keyword">is</span> no password (open server))</span><br></pre></td></tr></table></figure>
+
+<p>意思是将web服务器页面打开，需要注意ip地址要写*，否则外网访问不了，而username和password就是登陆页面的用户名和密码，可以改的复杂一点，另外服务器也要暴露一下9001端口<br>然后在配置文件末尾添加tornado的配置</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">[program:mytornado]</span><br><span class="line">command=python3 /root/mytornado/server.py --port=<span class="number">8001</span></span><br><span class="line">directory=/root/mytornado</span><br><span class="line">autorestart=true</span><br><span class="line">redirect_stderr=true</span><br></pre></td></tr></table></figure>
+
+<p>保存完成后，启动supervisor服务</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">supervisord -c /etc/supervisord.conf</span><br></pre></td></tr></table></figure>
+
+<p>此时，将刚刚手动启动的tornado服务关闭，然后访问服务器的9001端口，用配置文件的用户名和密码登录。<br><img src="/images/20190823024429_56609.png" alt><br>这样就可以在管理页面中控制tornado服务了，同时supervisor还赋予了守护进程模式，方便服务拉起<br>需要注意的是，当修改supervisor配置，想要生效就得重启supervisor服务，终止服务命令是:</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">killall -s INT /usr/bin/python</span><br></pre></td></tr></table></figure>
+
+<p>因为supervisor是基于python2的，所以不用担心python3的进程<br>另外想用命令控制tornado也是可以的</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">#停止tornado服务</span></span><br><span class="line">supervisorctl stop mytornado</span><br><span class="line"></span><br><span class="line"><span class="comment">#启动tornado服务</span></span><br><span class="line">supervisorctl start mytornado</span><br></pre></td></tr></table></figure>
+
+<p>至此，我们通过nginx反向代理tornado负载均衡，并且通过supervisor管理就部署好了，简直太简单了</p>
+
+        
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="http://yoursite.com/61854.html" data-id="ck0dth5pi000c6gj484rhpxlf"
+         class="article-share-link">Share</a>
+      
+  <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Centos7/">Centos7</a></li></ul>
+
+    </footer>
+
+  </div>
+
+  
+    
+  <nav class="article-nav">
+    
+      <a href="/10686.html" class="article-nav-link">
+        <strong class="article-nav-caption">Newer posts</strong>
+        <div class="article-nav-title">
+          
+            Centos7.6安装Docker
+          
+        </div>
+      </a>
+    
+    
+      <a href="/19947.html" class="article-nav-link">
+        <strong class="article-nav-caption">Olde posts</strong>
+        <div class="article-nav-title">Centos7.6安装redis</div>
+      </a>
+    
+  </nav>
+
+
+  
+
+  
+    
+  
+
+</article>
+
+
+
+</section>
+  <footer class="footer">
+  <div class="outer">
+    <div class="float-right">
+      <ul class="list-inline">
+  
+    <li><i class="fe fe-smile-alt"></i> <span id="busuanzi_value_site_uv"></span></li>
+  
+</ul>
+    </div>
+    <ul class="list-inline">
+      <li>&copy; 2019 Suhang Blog</li>
+      <li>坚持原创技术分享，感谢您的支持和鼓励！</li><br>
+      <!-- <li>友情链接:<a style="text-decoration: none;" href="https://kangyuetao.github.io/">Mr.Kang's</a></li> -->
+      <!-- <li>Theme  <a href="https://github.com/zhwangart/hexo-theme-ocean">Ocean</a></li> -->
+    </ul>
+  </div>
+</footer>
+
+</main>
+
+<aside class="sidebar sidebar-specter">
+  
+    <iframe frameborder="no" border="0" marginwidth="0" marginheight="0" width=120 height=60 src="//music.163.com/outchain/player?type=0&id=2972494917&auto=1&height=32"></iframe>
+<button class="navbar-toggle"></button>
+<nav class="navbar">
+  
+    <div class="logo">
+      <a href="/"><img src="/images/hexo.svg" alt="Suhang Blog"></a>
+    </div>
+  
+  <ul class="nav nav-main">
+    
+      <li class="nav-item">
+        <a class="nav-item-link" href="/categories">Categories</a>
+      </li>
+    
+      <li class="nav-item">
+        <a class="nav-item-link" href="/archives">Archives</a>
+      </li>
+    
+      <li class="nav-item">
+        <a class="nav-item-link" href="/tags">Tags</a>
+      </li>
+    
+      <li class="nav-item">
+        <a class="nav-item-link" href="/about">About</a>
+      </li>
+    
+    <li class="nav-item">
+      <a class="nav-item-link nav-item-search" title="Search">
+        <i class="fe fe-search"></i>
+        Search
+      </a>
+    </li>
+  </ul>
+
+
+  
+</nav>
+<nav class="navbar navbar-bottom">
+  <ul class="nav">
+    <li class="nav-item">
+      <div class="totop" id="totop">
+  <i class="fe fe-rocket"></i>
+  
+</div>
+    </li>
+    <li class="nav-item">
+      
+        <a class="nav-item-link" target="_blank" href="/atom.xml" title="RSS Feed">
+          <i class="fe fe-feed"></i>
+        </a>
+      
+    </li>
+  </ul>
+</nav>
+<div class="search-form-wrap">
+  <div class="local-search local-search-plugin">
+  <input type="search" id="local-search-input" class="local-search-input" placeholder="Search...">
+  <div id="local-search-result" class="local-search-result"></div>
+</div>
+</div>
+  </aside>
+  <script src="/js/jquery-2.0.3.min.js"></script>
+<script src="/js/jquery.justifiedGallery.min.js"></script>
+<script src="/js/lazyload.min.js"></script>
+<script src="/js/busuanzi-2.3.pure.min.js"></script>
+
+  <script src="/fancybox/jquery.fancybox.min.js"></script>
+
+
+
+  <script src="/js/tocbot.min.js"></script>
+  <script>
+    // Tocbot_v4.7.0  http://tscanlin.github.io/tocbot/
+    tocbot.init({
+      tocSelector: '.tocbot',
+      contentSelector: '.article-entry',
+      headingSelector: 'h1, h2, h3, h4, h5, h6',
+      hasInnerContainers: true,
+      scrollSmooth: true,
+      positionFixedSelector: '.tocbot',
+      positionFixedClass: 'is-position-fixed',
+      fixedSidebarOffset: 'auto',
+    });
+  </script>
+
+
+<script src="/js/ocean.js"></script>
+
+</body>
+</html>

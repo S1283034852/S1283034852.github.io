@@ -1,0 +1,350 @@
+<!DOCTYPE html>
+<html lang="en">
+<head><meta name="generator" content="Hexo 3.9.0">
+  <meta charset="utf-8">
+  
+  
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+  <title>
+    django uwsgi和nginx部署 |
+    
+    Suhang Blog</title>
+  
+    <link rel="shortcut icon" href="/favicon.ico">
+  
+  <link rel="stylesheet" href="/css/style.css">
+  
+    <link rel="stylesheet" href="/fancybox/jquery.fancybox.min.css">
+  
+  <script src="/js/pace.min.js"></script>
+</head></html>
+<body>
+<main class="content">
+  <section class="outer">
+  <article id="post-django的部署" class="article article-type-post" itemscope itemprop="blogPost" data-scroll-reveal>
+  
+  <div class="article-inner">
+    
+      <header class="article-header">
+        
+  
+    <h1 class="article-title" itemprop="name">
+      django uwsgi和nginx部署
+    </h1>
+  
+  
+
+
+
+
+      </header>
+    
+
+    
+      <div class="article-meta">
+        <a href="/59230.html" class="article-date">
+  <time datetime="2016-02-25T00:00:00.000Z" itemprop="datePublished">2016-02-25</time>
+</a>
+        
+  <div class="article-category">
+    <a class="article-category-link" href="/categories/Python/">Python</a> / <a class="article-category-link" href="/categories/Python/Django/">Django</a>
+  </div>
+
+      </div>
+    
+
+    
+      
+    <div class="tocbot"></div>
+
+
+
+
+
+    
+
+    <div class="article-entry" itemprop="articleBody">
+      
+        
+        
+          <p>整个部署链路：Nginx –&gt; uWSGI –&gt; python web </p>
+<p>uWSGI是一个软件，部署服务的工具</p>
+<p>WSGI规范，WSGI规定了python web应用和python web服务器之间的通讯方式</p>
+<p>目前主流的python web框架，都是基于这个规范实现的</p>
+<p>uwsgi协议：是uWSGI工具独有的协议，简介高效的uwsgi协议是选择uWSGI作为部署工具的重要理由之一，uWSGI是实现了uwsgi协议，WSGI规范和http协议的一个c语言实现的软件</p>
+<p><strong>Nginx</strong>是一个Web服务器，是一个反向代理工具，我们通常用它来部署静态文件。主流的Python Web开发框架都遵循WSGI规范。</p>
+<p>uWSGI通过WSGI规范和我们编写的服务进程通讯，然后通过自带的高效的 uwsgi 协议和 Nginx进行通讯，最终Nginx通过HTTP协议将服务对外透出。</p>
+<p>当一个访问进来的时候，首先到 Nginx，Nginx会把请求（HTTP协议）转换uwsgi协议传递给uWSGI，uWSGI通过WSGI和web server进行通讯取到响应结果，再通过uwsgi协议发给Nginx，最终Nginx以HTTP协议发现响应给用户。</p>
+<p>有些同学可能会说，uWSGI不是支持HTTP协议么，也支持静态文件部署，我不用Nginx行不行？</p>
+<p>当然可以，这么做没问题，但目前主流的做法是用Nginx，毕竟它久经考验，更稳定，当然也更值得我们信赖</p>
+<p><strong>supervisor</strong> 是一个进程管理工具。任何人都不能保证程序不异常退出，不别被人误杀，所以一个典型的工程做法就是使用supervisor看守着你的进程，一旦异常退出它会立马进程重新启动起来</p>
+<h2 id="进程分析："><a href="#进程分析：" class="headerlink" title="进程分析："></a>进程分析：</h2><p>进程是计算机分配资源的最小单位，我们的程序至少是运行在一个进程中</p>
+<p>1.查看进程信息</p>
+<p>Ps aux | grep python 查看系统中运行的python进程</p>
+<p>Ps -ef | grep xxxx</p>
+<p>输出结果中user后面的PID代表进程编号</p>
+<p>2.向进程发送信号：</p>
+<p>我们可以使用 kill PID 杀死一个进程，或者使用 kill -9 PID 强制杀死一个进程</p>
+<p>根据进程名杀死</p>
+<p> pkill -9 nginx</p>
+<h2 id="端口分析："><a href="#端口分析：" class="headerlink" title="端口分析："></a>端口分析：</h2><p>比如我们在服务器上运行 Nginx，访问的时候就是连接不上，我们可以使用 ps aux | grep nginx看下nginx进程是不是启动了，也可以看下 80端口有没有被占用。换句话说，如果没有任何程序跑在这个端口上（或者说没有任何程序使用这个端口），证明忘了启动相关程序或者没能启动成功，或者说程序使用的端口被修改了，不是80了，那又怎么可能能访问到呢？</p>
+<p>1.<strong>查看全部端口占用情况</strong></p>
+<p>Linux中我们可以使用 netstat 工具来进程网络分析，netstat 命令有非常多选项，这里只列出了常用的一部分</p>
+<p>-a或–all 显示所有连接中的Socket，默认不显示 LISTEN 相关的。</p>
+<p>-c或–continuous 持续列出网络状态，不断自动刷新输出。</p>
+<p>-l或–listening 显示监听中的服务器的Socket。</p>
+<p>-n或–numeric 直接使用IP地址，而不是展示域名。</p>
+<p>-p或–programs 显示正在使用Socket的程序进程PID和名称。</p>
+<p>-t或–tcp 显示TCP传输协议的连接。</p>
+<p>-u或–udp 显示UDP传输协议的连接。</p>
+<p>查看服务器监控了那些端口：netstat -nltp</p>
+<p>注意：如果PID和Program Name显示不出来，证明是权限不够，可以使用sudo运行</p>
+<p>2.查看具体端口占用情况：</p>
+<p>sudo lsof -i :80 (注意端口80前面有个英文的冒号</p>
+<p>我们可以通过这个方法查询出占用端口的程序，如果遇到端口已经被占用，原来的进程没有正确地终止，可以使用kill命令停掉原来的进程，这样我们就又可以使用这个端口了</p>
+<h2 id="安装uwsgi"><a href="#安装uwsgi" class="headerlink" title="安装uwsgi"></a>安装uwsgi</h2><p>Pip install uwsgi</p>
+<p>如果出现gcc错误，安装yum  install  gcc</p>
+<p>查看uwsgi动态链接是否有问题</p>
+<p>Which uwsgi</p>
+<p>配置环境变量：</p>
+<p>Vim ~/.bash_profile</p>
+<p>生效环境变量：source ~/.bash_profile</p>
+<p>启动uwsgi服务：</p>
+<p>uwsgi –http :9090 –wsgi-file index.py</p>
+<p>添加并发：</p>
+<p>processes为进程</p>
+<p>threads为线程</p>
+<p>uwsgi –http :9090 –wsgi-file index.py –processes 4 –threads 2</p>
+<h2 id="uwsgi部署django项目："><a href="#uwsgi部署django项目：" class="headerlink" title="uwsgi部署django项目："></a>uwsgi部署django项目：</h2><p>项目下创建uwsgi.ini文件</p>
+<p>[uwsgi]</p>
+<p># 通过哪个端口访问</p>
+<p>http = 0.0.0.0:8001</p>
+<p># 项目的路径</p>
+<p>chdir = /usr/www/DjangoSpider/</p>
+<p># 指向项目wsgi.py文件</p>
+<p>wsgi-file = DjangoSpider/wsgi.py</p>
+<p># 进程</p>
+<p>processes = 4</p>
+<p>#线程</p>
+<p>threads = 2</p>
+<p>#不使用 nginx的情况下，载入静态资源</p>
+<p>$static-map=/static=static</p>
+<p>执行uwsgi -I  uwsgi.ini  &amp;  &amp;指后台运行，所有东西会写入日志里</p>
+<p>日志：</p>
+<p>Logto = /tmp/mylog.log</p>
+<p>然后启动uwsgi uwsgi.ini即可</p>
+<p>也可以使用命令:uwsgi –http :8000 –module magazine.wsgi</p>
+<p>–module  指向wsgi.py文件 和自定义ini文件一样</p>
+<p>发现不会出现静态文件</p>
+<p>Nginx</p>
+<p>轻量级、抗高并发、速度快</p>
+<p>安装：yum install  nginx</p>
+<p>测试nginx：输入服务器ip会报出欢迎界面</p>
+<p>启动nginx服务</p>
+<p>systemctl start/restart nginx</p>
+<p>验证：直接请求IP，可见nginx</p>
+<p>配置</p>
+<p>默认的配置文件在 /etc/nginx 路径下，使用该配置已经可以正确地运行nginx；如需要自定义，修改其下的 nginx.conf 等文件即可。</p>
+<p>查看是否启动：（如果有master和worker两个进程证明启动成功）</p>
+<p>ps -ef | grep nginx</p>
+<p>停止(建议用quit，不建议用stop)</p>
+<p>nginx -s quit</p>
+<p>重新加载配置文件</p>
+<p>nginx -s reload</p>
+<h2 id="配置nginx"><a href="#配置nginx" class="headerlink" title="配置nginx:"></a>配置nginx:</h2><p>在项目的根目录下创建一个config文件夹，用来存放nginx和uwsgi的配置信息</p>
+<p>Mkdir  config</p>
+<p>在文件夹下创建文件进行nginx配置：</p>
+<p>Vi  名字.conf</p>
+<p># 负载均衡</p>
+<p>upstream upstream1 {</p>
+<p>​    server 127.0.0.1:8000;  # 处理相同业务的多个服务器 (负载均衡)</p>
+<p>}</p>
+<p>server {</p>
+<p>​    listen       80;           监听的http端口</p>
+<p>​    server_name  192.168.206.132;   # 对外部用户提供的统一域名或者ip地址</p>
+<p>​    # 将动态请求转发给uwsgi服务器</p>
+<p>​    location / {</p>
+<p>​        # 包含uwsgi请求的参数</p>
+<p>​        include uwsgi_params;</p>
+<p>​        # 转交请求给uwsgi服务器 (uwsgi服务器的ip和端口号)</p>
+<p>​        #uwsgi_pass 127.0.0.1:8000;  # 单个uwsgi服务器(不需要负载均衡)</p>
+<p>​        uwsgi_pass upstream1;</p>
+<p>​    }</p>
+<p>​    # 如果是静态资源请求就直接响应资源。</p>
+<p>​    location /static {</p>
+<p>​        # 指定静态文件存放的目录 (需要修改/usr/…目录的操作权限。 $ chmod 777 /usr)</p>
+<p>​        alias /usr/www/D_text04/static/;</p>
+<p>​    }</p>
+<p>#指向django的media目录</p>
+<p>​    location /media {</p>
+<p>​        alias /usr/www/D_text04/static/;</p>
+<p>​    }</p>
+<p>}</p>
+<p>将该配置文件加入到nginx启动配置文件中</p>
+<p>Nginx配置文件在:/etc/nginx/      回去conf.d中找启动文件</p>
+<p>Cp  名字.conf   /etc/nginx/conf.d</p>
+<p>拉去所有static文件到同一个目录</p>
+<p>在django中sett.py文件中，注释STATICFILES_DIRS,再生产环境中，这个配置失效</p>
+<p>然后执行python manage.py collectstatic</p>
+<p>运行nginx：service  nginx  restart</p>
+<p>nginx错误日志：/var/log/nginx</p>
+
+        
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="http://yoursite.com/59230.html" data-id="ck0dth5q8001d6gj4tc7loz2h"
+         class="article-share-link">Share</a>
+      
+  <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Django/">Django</a></li></ul>
+
+    </footer>
+
+  </div>
+
+  
+    
+  <nav class="article-nav">
+    
+      <a href="/63824.html" class="article-nav-link">
+        <strong class="article-nav-caption">Newer posts</strong>
+        <div class="article-nav-title">
+          
+            vscode 同步服务器代码
+          
+        </div>
+      </a>
+    
+    
+      <a href="/34867.html" class="article-nav-link">
+        <strong class="article-nav-caption">Olde posts</strong>
+        <div class="article-nav-title">django中的cookie与session</div>
+      </a>
+    
+  </nav>
+
+
+  
+
+  
+    
+  
+
+</article>
+
+
+
+</section>
+  <footer class="footer">
+  <div class="outer">
+    <div class="float-right">
+      <ul class="list-inline">
+  
+    <li><i class="fe fe-smile-alt"></i> <span id="busuanzi_value_site_uv"></span></li>
+  
+</ul>
+    </div>
+    <ul class="list-inline">
+      <li>&copy; 2019 Suhang Blog</li>
+      <li>坚持原创技术分享，感谢您的支持和鼓励！</li><br>
+      <!-- <li>友情链接:<a style="text-decoration: none;" href="https://kangyuetao.github.io/">Mr.Kang's</a></li> -->
+      <!-- <li>Theme  <a href="https://github.com/zhwangart/hexo-theme-ocean">Ocean</a></li> -->
+    </ul>
+  </div>
+</footer>
+
+</main>
+
+<aside class="sidebar sidebar-specter">
+  
+    <iframe frameborder="no" border="0" marginwidth="0" marginheight="0" width=120 height=60 src="//music.163.com/outchain/player?type=0&id=2972494917&auto=1&height=32"></iframe>
+<button class="navbar-toggle"></button>
+<nav class="navbar">
+  
+    <div class="logo">
+      <a href="/"><img src="/images/hexo.svg" alt="Suhang Blog"></a>
+    </div>
+  
+  <ul class="nav nav-main">
+    
+      <li class="nav-item">
+        <a class="nav-item-link" href="/categories">Categories</a>
+      </li>
+    
+      <li class="nav-item">
+        <a class="nav-item-link" href="/archives">Archives</a>
+      </li>
+    
+      <li class="nav-item">
+        <a class="nav-item-link" href="/tags">Tags</a>
+      </li>
+    
+      <li class="nav-item">
+        <a class="nav-item-link" href="/about">About</a>
+      </li>
+    
+    <li class="nav-item">
+      <a class="nav-item-link nav-item-search" title="Search">
+        <i class="fe fe-search"></i>
+        Search
+      </a>
+    </li>
+  </ul>
+
+
+  
+</nav>
+<nav class="navbar navbar-bottom">
+  <ul class="nav">
+    <li class="nav-item">
+      <div class="totop" id="totop">
+  <i class="fe fe-rocket"></i>
+  
+</div>
+    </li>
+    <li class="nav-item">
+      
+        <a class="nav-item-link" target="_blank" href="/atom.xml" title="RSS Feed">
+          <i class="fe fe-feed"></i>
+        </a>
+      
+    </li>
+  </ul>
+</nav>
+<div class="search-form-wrap">
+  <div class="local-search local-search-plugin">
+  <input type="search" id="local-search-input" class="local-search-input" placeholder="Search...">
+  <div id="local-search-result" class="local-search-result"></div>
+</div>
+</div>
+  </aside>
+  <script src="/js/jquery-2.0.3.min.js"></script>
+<script src="/js/jquery.justifiedGallery.min.js"></script>
+<script src="/js/lazyload.min.js"></script>
+<script src="/js/busuanzi-2.3.pure.min.js"></script>
+
+  <script src="/fancybox/jquery.fancybox.min.js"></script>
+
+
+
+  <script src="/js/tocbot.min.js"></script>
+  <script>
+    // Tocbot_v4.7.0  http://tscanlin.github.io/tocbot/
+    tocbot.init({
+      tocSelector: '.tocbot',
+      contentSelector: '.article-entry',
+      headingSelector: 'h1, h2, h3, h4, h5, h6',
+      hasInnerContainers: true,
+      scrollSmooth: true,
+      positionFixedSelector: '.tocbot',
+      positionFixedClass: 'is-position-fixed',
+      fixedSidebarOffset: 'auto',
+    });
+  </script>
+
+
+<script src="/js/ocean.js"></script>
+
+</body>
+</html>

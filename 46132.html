@@ -1,0 +1,242 @@
+<!DOCTYPE html>
+<html lang="en">
+<head><meta name="generator" content="Hexo 3.9.0">
+  <meta charset="utf-8">
+  
+  
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+  <title>
+    单例模式 |
+    
+    Suhang Blog</title>
+  
+    <link rel="shortcut icon" href="/favicon.ico">
+  
+  <link rel="stylesheet" href="/css/style.css">
+  
+    <link rel="stylesheet" href="/fancybox/jquery.fancybox.min.css">
+  
+  <script src="/js/pace.min.js"></script>
+</head></html>
+<body>
+<main class="content">
+  <section class="outer">
+  <article id="post-单例模式" class="article article-type-post" itemscope itemprop="blogPost" data-scroll-reveal>
+  
+  <div class="article-inner">
+    
+      <header class="article-header">
+        
+  
+    <h1 class="article-title" itemprop="name">
+      单例模式
+    </h1>
+  
+  
+
+
+
+
+      </header>
+    
+
+    
+      <div class="article-meta">
+        <a href="/46132.html" class="article-date">
+  <time datetime="2015-10-15T00:00:00.000Z" itemprop="datePublished">2015-10-15</time>
+</a>
+        
+  <div class="article-category">
+    <a class="article-category-link" href="/categories/Python/">Python</a>
+  </div>
+
+      </div>
+    
+
+    
+      
+
+
+
+
+    
+
+    <div class="article-entry" itemprop="articleBody">
+      
+        
+        
+          <p>首先要清楚什么是单例模式，单例模式即一个类有且仅有一个实例，那么通过python怎么实现一个类只有一个实例呢。</p>
+<p>首先创建一个类，比如一个世界只有一个你，不会有第二个</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">My</span>:</span></span><br><span class="line">    <span class="keyword">pass</span></span><br><span class="line">a = My()</span><br><span class="line">print(id(a))</span><br><span class="line">b = My()</span><br><span class="line">print(id(b))</span><br><span class="line"></span><br><span class="line">运行结果如下：</span><br><span class="line"><span class="number">935478784072</span></span><br><span class="line"><span class="number">935478784186</span></span><br></pre></td></tr></table></figure>
+
+<p>通过打印实例id可以发现，显然世界上创建了两个实例。</p>
+<p>那么怎么能够让类只创建一个实例，而后在创建的实例是返回上一次的对象的引用呢？</p>
+<p>我们了解到，python中，一个类创建对象实例是用过调用父类object的<strong>new</strong>(cls)方法来创建对象的</p>
+<p>我们可以通过重写<em>new</em>(cls)方法去实现只创建一个实例</p>
+<p>代码如下：</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">My</span><span class="params">(object)</span>:</span></span><br><span class="line">    __instance=<span class="literal">None</span> <span class="comment">#定义一个类属性做判断</span></span><br><span class="line"> </span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">__new__</span><span class="params">(cls)</span>:</span></span><br><span class="line"> </span><br><span class="line">        <span class="keyword">if</span> cls.__instance==<span class="literal">None</span>:</span><br><span class="line">            <span class="comment">#如果__instance为空证明是第一次创建实例</span></span><br><span class="line">            <span class="comment">#通过父类的__new__(cls)创建实例</span></span><br><span class="line">            cls.__instance=object.__new__(cls)</span><br><span class="line">            <span class="keyword">return</span>  cls.__instance</span><br><span class="line">        <span class="keyword">else</span>:</span><br><span class="line">            <span class="comment">#返回上一个对象的引用</span></span><br><span class="line">            <span class="keyword">return</span> cls.__instance</span><br><span class="line"> </span><br><span class="line">a = My()</span><br><span class="line">print(id(a))</span><br><span class="line">b = My()</span><br><span class="line">print(id(b))</span><br></pre></td></tr></table></figure>
+
+<p>运行结果如下：</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="number">1730389200</span></span><br><span class="line"><span class="number">1730389200</span></span><br></pre></td></tr></table></figure>
+
+<p>可以看出他们id相同，是同一个对象。。</p>
+
+        
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="http://yoursite.com/46132.html" data-id="ck0dth5qm00266gj4zcfo1hpt"
+         class="article-share-link">Share</a>
+      
+  <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Python/">Python</a></li></ul>
+
+    </footer>
+
+  </div>
+
+  
+    
+  <nav class="article-nav">
+    
+      <a href="/38757.html" class="article-nav-link">
+        <strong class="article-nav-caption">Newer posts</strong>
+        <div class="article-nav-title">
+          
+            django User模型使用proxy模型
+          
+        </div>
+      </a>
+    
+    
+      <a href="/2770.html" class="article-nav-link">
+        <strong class="article-nav-caption">Olde posts</strong>
+        <div class="article-nav-title">迭代器与生成器</div>
+      </a>
+    
+  </nav>
+
+
+  
+
+  
+    
+  
+
+</article>
+
+
+
+</section>
+  <footer class="footer">
+  <div class="outer">
+    <div class="float-right">
+      <ul class="list-inline">
+  
+    <li><i class="fe fe-smile-alt"></i> <span id="busuanzi_value_site_uv"></span></li>
+  
+</ul>
+    </div>
+    <ul class="list-inline">
+      <li>&copy; 2019 Suhang Blog</li>
+      <li>坚持原创技术分享，感谢您的支持和鼓励！</li><br>
+      <!-- <li>友情链接:<a style="text-decoration: none;" href="https://kangyuetao.github.io/">Mr.Kang's</a></li> -->
+      <!-- <li>Theme  <a href="https://github.com/zhwangart/hexo-theme-ocean">Ocean</a></li> -->
+    </ul>
+  </div>
+</footer>
+
+</main>
+
+<aside class="sidebar sidebar-specter">
+  
+    <iframe frameborder="no" border="0" marginwidth="0" marginheight="0" width=120 height=60 src="//music.163.com/outchain/player?type=0&id=2972494917&auto=1&height=32"></iframe>
+<button class="navbar-toggle"></button>
+<nav class="navbar">
+  
+    <div class="logo">
+      <a href="/"><img src="/images/hexo.svg" alt="Suhang Blog"></a>
+    </div>
+  
+  <ul class="nav nav-main">
+    
+      <li class="nav-item">
+        <a class="nav-item-link" href="/categories">Categories</a>
+      </li>
+    
+      <li class="nav-item">
+        <a class="nav-item-link" href="/archives">Archives</a>
+      </li>
+    
+      <li class="nav-item">
+        <a class="nav-item-link" href="/tags">Tags</a>
+      </li>
+    
+      <li class="nav-item">
+        <a class="nav-item-link" href="/about">About</a>
+      </li>
+    
+    <li class="nav-item">
+      <a class="nav-item-link nav-item-search" title="Search">
+        <i class="fe fe-search"></i>
+        Search
+      </a>
+    </li>
+  </ul>
+
+
+  
+</nav>
+<nav class="navbar navbar-bottom">
+  <ul class="nav">
+    <li class="nav-item">
+      <div class="totop" id="totop">
+  <i class="fe fe-rocket"></i>
+  
+</div>
+    </li>
+    <li class="nav-item">
+      
+        <a class="nav-item-link" target="_blank" href="/atom.xml" title="RSS Feed">
+          <i class="fe fe-feed"></i>
+        </a>
+      
+    </li>
+  </ul>
+</nav>
+<div class="search-form-wrap">
+  <div class="local-search local-search-plugin">
+  <input type="search" id="local-search-input" class="local-search-input" placeholder="Search...">
+  <div id="local-search-result" class="local-search-result"></div>
+</div>
+</div>
+  </aside>
+  <script src="/js/jquery-2.0.3.min.js"></script>
+<script src="/js/jquery.justifiedGallery.min.js"></script>
+<script src="/js/lazyload.min.js"></script>
+<script src="/js/busuanzi-2.3.pure.min.js"></script>
+
+  <script src="/fancybox/jquery.fancybox.min.js"></script>
+
+
+
+  <script src="/js/tocbot.min.js"></script>
+  <script>
+    // Tocbot_v4.7.0  http://tscanlin.github.io/tocbot/
+    tocbot.init({
+      tocSelector: '.tocbot',
+      contentSelector: '.article-entry',
+      headingSelector: 'h1, h2, h3, h4, h5, h6',
+      hasInnerContainers: true,
+      scrollSmooth: true,
+      positionFixedSelector: '.tocbot',
+      positionFixedClass: 'is-position-fixed',
+      fixedSidebarOffset: 'auto',
+    });
+  </script>
+
+
+<script src="/js/ocean.js"></script>
+
+</body>
+</html>

@@ -1,0 +1,403 @@
+<!DOCTYPE html>
+<html lang="en">
+<head><meta name="generator" content="Hexo 3.9.0">
+  <meta charset="utf-8">
+  
+  
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+  <title>
+    机器学习入门 |
+    
+    Suhang Blog</title>
+  
+    <link rel="shortcut icon" href="/favicon.ico">
+  
+  <link rel="stylesheet" href="/css/style.css">
+  
+    <link rel="stylesheet" href="/fancybox/jquery.fancybox.min.css">
+  
+  <script src="/js/pace.min.js"></script>
+</head></html>
+<body>
+<main class="content">
+  <section class="outer">
+  <article id="post-机器学习入门" class="article article-type-post" itemscope itemprop="blogPost" data-scroll-reveal>
+  
+  <div class="article-inner">
+    
+      <header class="article-header">
+        
+  
+    <h1 class="article-title" itemprop="name">
+      机器学习入门
+    </h1>
+  
+  
+
+
+
+
+      </header>
+    
+
+    
+      <div class="article-meta">
+        <a href="/62760.html" class="article-date">
+  <time datetime="2018-03-29T00:00:00.000Z" itemprop="datePublished">2018-03-29</time>
+</a>
+        
+  <div class="article-category">
+    <a class="article-category-link" href="/categories/Python/">Python</a> / <a class="article-category-link" href="/categories/Python/机器学习/">机器学习</a>
+  </div>
+
+      </div>
+    
+
+    
+      
+    <div class="tocbot"></div>
+
+
+
+
+
+    
+
+    <div class="article-entry" itemprop="articleBody">
+      
+        
+        
+          <h4 id="认识机器学习"><a href="#认识机器学习" class="headerlink" title="认识机器学习"></a>认识机器学习</h4><p>Anaconda   多版本python管理工具</p>
+<p>自带jupyter  notebook    在浏览器里写代码  现在基本就是jupyter lab</p>
+<h2 id="Jupyter-lab-使用："><a href="#Jupyter-lab-使用：" class="headerlink" title="Jupyter lab 使用："></a>Jupyter lab 使用：</h2><p>cmd下 jupter lab自动弹出</p>
+<p>ctrl+enter   运行代码</p>
+<p>esc+a    这两行中间新建一行</p>
+<p>B   在下方插入新单元</p>
+<p>A   在上方插入</p>
+<p>注释  </p>
+<p>首先  #这是注释    然后ctrl+shift+减号  然后esc取消编辑状态  然后数字2   在shift+回车</p>
+<p>删除整行   dd</p>
+<h1 id="Numpy"><a href="#Numpy" class="headerlink" title="Numpy"></a>Numpy</h1><p>是个科学计算库，重在数值计算，主要用于多维数组（矩阵）处理的库，用来存储和处理大型矩阵，比python自身的嵌套列表结构要高效的多，本身是c语言写成</p>
+<p><font color="red">ndarray</font>多维数组</p>
+<p>是最基本的numpy数据类型</p>
+<p>ndarray数组是一个多维的数组对象（矩阵），成为ndarray，具有矢量算数运算能力和复杂的广播能力，并具有执行速度快和节省空间的特点</p>
+<p>ndarray的下标从0开始，切数组里的所有元素必须是相同类型</p>
+<p><font color="red">一维数据大致为</font>：[1,2,3,4]    1*4</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> numpy <span class="keyword">as</span> np</span><br><span class="line"></span><br><span class="line">data = np.arange(<span class="number">1000</span>)     <span class="comment"># 生成0-999的一维数据</span></span><br><span class="line"></span><br><span class="line">data</span><br><span class="line"></span><br><span class="line">type(data)</span><br><span class="line"></span><br><span class="line">类型为numpy.ndarray  （高维数组类型）</span><br><span class="line"></span><br><span class="line">print(data.shape)    <span class="comment">#1000个数据</span></span><br><span class="line"></span><br><span class="line">print(data.ndim)     <span class="comment">#查看高维数组的维度</span></span><br></pre></td></tr></table></figure>
+
+<p><font color="red">二维数组</font>：[[1,2,3],[11,22,33]]   2*3</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> numpy <span class="keyword">as</span> np</span><br><span class="line"></span><br><span class="line">data = np.array([[<span class="number">1</span>,<span class="number">2</span>,<span class="number">3</span>],[<span class="number">11</span>,<span class="number">22</span>,<span class="number">33</span>]])</span><br><span class="line"></span><br><span class="line">data.shape</span><br><span class="line"></span><br><span class="line">data.ndim</span><br></pre></td></tr></table></figure>
+
+<p><font color="red">三维数组</font>：[[[1,2],[2,3],[3,4]]]   1<em>3</em>2</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> numpy <span class="keyword">as</span> np</span><br><span class="line"></span><br><span class="line">data = np.array([[[<span class="number">1</span>,<span class="number">2</span>],[<span class="number">2</span>,<span class="number">3</span>],[<span class="number">3</span>,<span class="number">4</span>]]])</span><br><span class="line"></span><br><span class="line">print(data.shape)</span><br></pre></td></tr></table></figure>
+
+<p><font color="red">reshape</font>可以将一个一维的数组改变他的维度</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">import numpy as np</span><br><span class="line"></span><br><span class="line">data = np.array([1,2,3,4,5,6])</span><br><span class="line"></span><br><span class="line">data</span><br><span class="line"></span><br><span class="line">\# print(data.reshape(2,3))</span><br></pre></td></tr></table></figure>
+
+
+
+<p>利用reshape将一个集合numpy数组生成2X10的高维数组</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> numpy <span class="keyword">as</span> np</span><br><span class="line"></span><br><span class="line">data = np.arange(<span class="number">1</span>,<span class="number">21</span>)</span><br><span class="line"></span><br><span class="line">data.reshape(<span class="number">2</span>,<span class="number">10</span>)</span><br></pre></td></tr></table></figure>
+
+<h2 id="列表转换高维数据"><a href="#列表转换高维数据" class="headerlink" title="列表转换高维数据"></a>列表转换高维数据</h2><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> numpy <span class="keyword">as</span> np</span><br><span class="line"></span><br><span class="line">\<span class="comment">#list---&gt;np</span></span><br><span class="line"></span><br><span class="line">stulist = [<span class="number">1</span>,<span class="number">2</span>,<span class="number">3</span>,<span class="number">4</span>]</span><br><span class="line"></span><br><span class="line">data = np.array(stulist)</span><br><span class="line"></span><br><span class="line">print(data)</span><br><span class="line"></span><br><span class="line">print(type(data))</span><br><span class="line"></span><br><span class="line">列表有逗号    高维没有逗号</span><br></pre></td></tr></table></figure>
+
+
+
+<h2 id="高维转换列表"><a href="#高维转换列表" class="headerlink" title="高维转换列表"></a>高维转换列表</h2><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> numpy <span class="keyword">as</span> np</span><br><span class="line"></span><br><span class="line">\<span class="comment"># np---&gt;list</span></span><br><span class="line"></span><br><span class="line">data = np.array([<span class="number">1</span>,<span class="number">2</span>,<span class="number">3</span>,<span class="number">4</span>])</span><br><span class="line"></span><br><span class="line">print(data)</span><br><span class="line"></span><br><span class="line">data.tolist()</span><br></pre></td></tr></table></figure>
+
+<p>np.sum()，返回求和 </p>
+<p>np.mean()，返回均值 </p>
+<p>np.max()，返回最大值 </p>
+<p>np.min()，返回最小值 </p>
+<p>np.std()，返回标准偏差（standard deviation）:(平均值u) 在描述一个波动范围时标准差比方差更方便 </p>
+<p>np.var()，返回方差（variance）:用来度量随机变量(x1…)和其数学期望（即均值x）之间的偏离程度 标注差和方差都是，反映的是一维数组的离散程度 </p>
+<p>np.cumsum()，返回累加值 </p>
+<p>np.cumprod()，返回累乘积值</p>
+<p>random随机生成数</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> numpy <span class="keyword">as</span> np</span><br><span class="line"></span><br><span class="line">\<span class="comment">#np.random 模块</span></span><br><span class="line"></span><br><span class="line">data = np.random.randint(<span class="number">10</span>,<span class="number">20</span>,size=(<span class="number">5</span>,<span class="number">3</span>))</span><br><span class="line"></span><br><span class="line">data</span><br></pre></td></tr></table></figure>
+
+<h3 id="随机种子，因为是随机数，数组会变，随机种子会固定随机数"><a href="#随机种子，因为是随机数，数组会变，随机种子会固定随机数" class="headerlink" title="随机种子，因为是随机数，数组会变，随机种子会固定随机数"></a>随机种子，因为是随机数，数组会变，随机种子会固定随机数</h3><p>Np.random.seed(10)</p>
+<p>r_   行与行相加  列数必须相同  否则报错</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> numpy <span class="keyword">as</span> np</span><br><span class="line"></span><br><span class="line">\<span class="comment">#np.random 模块</span></span><br><span class="line"></span><br><span class="line">data = np.random.randint(<span class="number">10</span>,<span class="number">20</span>,size=(<span class="number">5</span>,<span class="number">3</span>))</span><br><span class="line"></span><br><span class="line">data1 = np.random.randint(<span class="number">10</span>,<span class="number">20</span>,size=(<span class="number">4</span>,<span class="number">3</span>))</span><br><span class="line"></span><br><span class="line">print(data.shape)</span><br><span class="line"></span><br><span class="line">print(data1.shape)</span><br><span class="line"></span><br><span class="line">print(np.r_[data,data1].shape)   <span class="comment">#行数相加</span></span><br></pre></td></tr></table></figure>
+
+<p>c_  列与列相加  行数必须相同  否则报错</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> numpy <span class="keyword">as</span> np</span><br><span class="line"></span><br><span class="line">\<span class="comment">#np.random 模块</span></span><br><span class="line"></span><br><span class="line">data = np.random.randint(<span class="number">10</span>,<span class="number">20</span>,size=(<span class="number">5</span>,<span class="number">3</span>))</span><br><span class="line"></span><br><span class="line">data1 = np.random.randint(<span class="number">10</span>,<span class="number">20</span>,size=(<span class="number">4</span>,<span class="number">3</span>))</span><br><span class="line"></span><br><span class="line">data2 = np.random.randint(<span class="number">10</span>,<span class="number">20</span>,size=(<span class="number">4</span>,<span class="number">4</span>))</span><br><span class="line"></span><br><span class="line">print(data1.shape)</span><br><span class="line"></span><br><span class="line">print(np.c_[data1,data2].shape)   <span class="comment">#列数相加</span></span><br></pre></td></tr></table></figure>
+
+<h2 id="切片"><a href="#切片" class="headerlink" title="切片"></a>切片</h2><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">data = np.random.randint(<span class="number">10</span>,<span class="number">30</span>,size=(<span class="number">5</span>,<span class="number">3</span>))</span><br><span class="line"></span><br><span class="line">print(data)</span><br><span class="line"></span><br><span class="line">print(data[<span class="number">0</span>][<span class="number">1</span>])</span><br><span class="line"></span><br><span class="line">print(data[::<span class="number">2</span>])</span><br></pre></td></tr></table></figure>
+
+<h2 id="Linspace-生成等分数据"><a href="#Linspace-生成等分数据" class="headerlink" title="Linspace   生成等分数据"></a>Linspace   生成等分数据</h2><p>print(np.linspace(10,21,10))   #生成等分数据</p>
+<p>结果为：</p>
+<p>[10.         11.22222222 12.44444444 13.66666667 14.88888889 16.11111111<br>  17.33333333 18.55555556 19.77777778 21.        ]</p>
+<p>Random,randn()    生成正太分布数据</p>
+<p>Random.normal()   把均值为0，方差为1的数据分布，称为标准正太分布</p>
+<p>data4 = np.random.normal(loc=0,scale=1,size=(20,30))</p>
+<p>print(data4)</p>
+<p>print(np.std(data4))  #标准差为1</p>
+<p>print(np.var(data4))</p>
+<p>print(np.mean(data4))  #均值为0</p>
+<h1 id="Pandas-两种数据类型"><a href="#Pandas-两种数据类型" class="headerlink" title="Pandas  两种数据类型:"></a>Pandas  两种数据类型:</h1><p>处理表格型属性，</p>
+<h2 id="Series-存放一维度数据-自带下标"><a href="#Series-存放一维度数据-自带下标" class="headerlink" title="Series    存放一维度数据    自带下标"></a>Series    存放一维度数据    自带下标</h2><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> pandas <span class="keyword">as</span> pd</span><br><span class="line"></span><br><span class="line">data1 = pd.Series([<span class="number">1</span>,<span class="number">2</span>,<span class="number">3</span>,<span class="number">4</span>,<span class="number">5</span>,<span class="number">6</span>])</span><br><span class="line"></span><br><span class="line">data1</span><br></pre></td></tr></table></figure>
+
+<p>结果：</p>
+<p>0    1</p>
+<p>1    2</p>
+<p>2    3 </p>
+<p>3    4</p>
+<p>4    5</p>
+<p>5    6</p>
+<p>dtype: int64</p>
+<h2 id="DataFrame-存放二维度数据"><a href="#DataFrame-存放二维度数据" class="headerlink" title="DataFrame    存放二维度数据"></a>DataFrame    存放二维度数据</h2><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br></pre></td><td class="code"><pre><span class="line">data2 = pd.DataFrame([[<span class="number">1</span>,<span class="number">2</span>,<span class="number">3</span>],[<span class="number">1</span>,<span class="number">2</span>,<span class="number">3</span>]])</span><br><span class="line"></span><br><span class="line">Data2</span><br><span class="line"></span><br><span class="line">columns给列起别名</span><br><span class="line"></span><br><span class="line">data2 = pd.DataFrame([[<span class="number">1</span>,<span class="number">2</span>,<span class="number">3</span>],[<span class="number">1</span>,<span class="number">2</span>,<span class="number">3</span>]],columns=[<span class="string">'a'</span>,<span class="string">'b'</span>,<span class="string">'c'</span>])  </span><br><span class="line"></span><br><span class="line"> </span><br><span class="line"></span><br><span class="line">Info()   head()   tail()</span><br><span class="line"></span><br><span class="line"><span class="keyword">import</span> pandas <span class="keyword">as</span> pd</span><br><span class="line"></span><br><span class="line"><span class="keyword">import</span> numpy <span class="keyword">as</span> np</span><br><span class="line"></span><br><span class="line">\<span class="comment">#series</span></span><br><span class="line"></span><br><span class="line">data1 = pd.Series([<span class="number">1</span>,<span class="number">2</span>,<span class="number">3</span>,<span class="number">4</span>,<span class="number">5</span>,<span class="number">6</span>])</span><br><span class="line"></span><br><span class="line">\<span class="comment">#DataFrame</span></span><br><span class="line"></span><br><span class="line">data2 = pd.DataFrame(np.random.randint(<span class="number">24</span>,size=(<span class="number">6</span>,<span class="number">2</span>)))</span><br><span class="line"></span><br><span class="line">data2</span><br><span class="line"></span><br><span class="line">print(data2.info())</span><br><span class="line"></span><br><span class="line">print(data2.head())   <span class="comment">#打印行    默认五行</span></span><br><span class="line"></span><br><span class="line">print(data2.tail())   <span class="comment">#打印尾部    默认五行</span></span><br></pre></td></tr></table></figure>
+
+<h3 id="排序："><a href="#排序：" class="headerlink" title="排序："></a>排序：</h3><p>data.sort_index() :按照索引排序，默认升序</p>
+<p>data.sort_values():按照‘列名’排序（多列可用 [‘a’,’b’…. ]），默认升序</p>
+<h3 id="读取文件"><a href="#读取文件" class="headerlink" title="读取文件"></a>读取文件</h3><p>Pd.read  </p>
+<p>读取csv文件</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> pandas <span class="keyword">as</span> pd</span><br><span class="line"></span><br><span class="line">data = pd.read_csv(<span class="string">'51job.csv'</span>,encoding=<span class="string">'ANSI'</span>)</span><br><span class="line"></span><br><span class="line">data</span><br></pre></td></tr></table></figure>
+
+<p> #encoding指定编码格式    如果不需要头部显示加上参数header=none   </p>
+<p>取值：data.values</p>
+<p>Data.index = range()    改变了标签数</p>
+<p>Loc：行标签进行取值</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> pandas <span class="keyword">as</span> pd</span><br><span class="line"></span><br><span class="line">data = pd.read_csv(<span class="string">'51job.csv'</span>,encoding=<span class="string">'ANSI'</span>)</span><br><span class="line"></span><br><span class="line">data.index = range(<span class="number">10</span>,<span class="number">26</span>)</span><br><span class="line"></span><br><span class="line">data.loc[[<span class="number">10</span>,<span class="number">11</span>,<span class="number">12</span>]]</span><br></pre></td></tr></table></figure>
+
+<h2 id="iloc：行索引进行取值-一般用切片"><a href="#iloc：行索引进行取值-一般用切片" class="headerlink" title="iloc：行索引进行取值  一般用切片"></a>iloc：行索引进行取值  一般用切片</h2><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> pandas <span class="keyword">as</span> pd</span><br><span class="line"></span><br><span class="line">data = pd.read_csv(<span class="string">'51job.csv'</span>,encoding=<span class="string">'ANSI'</span>)</span><br><span class="line"></span><br><span class="line">data.index = range(<span class="number">10</span>,<span class="number">26</span>)</span><br><span class="line"></span><br><span class="line">data.iloc[<span class="number">1</span>:<span class="number">4</span>]</span><br></pre></td></tr></table></figure>
+
+<p>直接根据索引取值，不用管标签</p>
+<p>Data[‘ 字段名’]     直接取出列数据</p>
+<p>比较</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> pandas <span class="keyword">as</span> pd</span><br><span class="line"></span><br><span class="line">data = pd.read_csv(<span class="string">'51job.csv'</span>,encoding=<span class="string">'ANSI'</span>)</span><br><span class="line"></span><br><span class="line">data.index = range(<span class="number">10</span>,<span class="number">26</span>)</span><br><span class="line"></span><br><span class="line">取出工资大于<span class="number">1000</span>   并且只展示时间</span><br><span class="line"></span><br><span class="line">data[data[<span class="string">'salary'</span>] &gt; <span class="number">1000</span>][<span class="string">'date'</span>]</span><br></pre></td></tr></table></figure>
+
+<p>已utf8的方式写入</p>
+<p>Data.to_csv(‘kuaidaili.csv’,encoding=’utf-8’)</p>
+<p>再次查看使用utf8格式读取</p>
+<p>缺失值的处理：</p>
+<p>删除缺失值：data.dropna()</p>
+<p>删除为空的数据，是整条数据</p>
+<p>但是并不是同步源文件      需要加上inplace=True  修改元数据</p>
+<h3 id="通过索引删除："><a href="#通过索引删除：" class="headerlink" title="通过索引删除："></a>通过索引删除：</h3><p># drop.drop(1)</p>
+<p>data.drop([1,2,3,4])</p>
+<p>填充某一列：data[‘salary’].fillna(11111)</p>
+<p>用均值填充某一列数据：data[‘salary’].fillna(data[‘salary’].mean())</p>
+<p>读取网络：只能解析table标签,不能太频繁(time.sleep)</p>
+<p>Data = Read_html(‘网址‘)</p>
+<h3 id="连接数据库"><a href="#连接数据库" class="headerlink" title="连接数据库"></a>连接数据库</h3><p>stu是要连接的那个库名</p>
+<p>Read_sql(host=’127.0.0.1’,port=3306,user=’root’,password=’’,db=’stu’)</p>
+<h1 id="Matplotlib"><a href="#Matplotlib" class="headerlink" title="Matplotlib:"></a>Matplotlib:</h1><ul>
+<li>s：点的大小，默认20</li>
+<li>c：点的取色序列，默认蓝色</li>
+<li>marker：点的形状，默认是圆（具体的点的形状可以在matplotlib的官网中搜索markers查看。）</li>
+<li>alpha：点的透明度          0-1</li>
+<li>edgecolors：边缘颜色</li>
+</ul>
+<p>from matplotlib import pyplot as plt</p>
+<h3 id="中文设置"><a href="#中文设置" class="headerlink" title="中文设置"></a>中文设置</h3><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> matplotlib</span><br><span class="line"></span><br><span class="line">matplotlib.rcParams[<span class="string">'font.sans-serif'</span>] = [<span class="string">'SimHei'</span>]</span><br></pre></td></tr></table></figure>
+
+<h3 id="柱状图-bar"><a href="#柱状图-bar" class="headerlink" title="柱状图  bar()"></a>柱状图  bar()</h3><p>label图例名</p>
+<p>第一个参数为x轴，第二个为y轴</p>
+<p>plt.bar(range(5),[100,200,100,400,500],color=’g’,label=’柱状’)</p>
+<p>#x轴标记</p>
+<p>plt.xlabel(‘x’)</p>
+<p>y轴标记</p>
+<p>plt.ylabel(‘y’)</p>
+<p>#x轴刻度    给x轴起别名 </p>
+<p>plt.xticks(range(5),[‘A’,’B’,’C’,’D’,’E’])</p>
+<h3 id="折线"><a href="#折线" class="headerlink" title="折线"></a>折线</h3><p>plt.plot([100,200,100,500,400],color=’r’,label=’折线’)</p>
+<h3 id="绘制图例"><a href="#绘制图例" class="headerlink" title="绘制图例"></a>绘制图例</h3><p>plt.legend()</p>
+<h3 id="散点图"><a href="#散点图" class="headerlink" title="散点图"></a>散点图</h3><p>from matplotlib import pyplot as plt</p>
+<p>#第一个参数为横轴，第二个为纵轴</p>
+<p>参数：marker=’’   给点样式</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">plt.scatter([<span class="number">1</span>,<span class="number">2</span>,<span class="number">3</span>,<span class="number">4</span>,<span class="number">5</span>],[<span class="number">10</span>,<span class="number">20</span>,<span class="number">30</span>,<span class="number">40</span>,<span class="number">50</span>])</span><br><span class="line"></span><br><span class="line">plt.scatter([<span class="number">20</span>,<span class="number">1</span>,<span class="number">40</span>,<span class="number">30</span>,<span class="number">3</span>],[<span class="number">12</span>,<span class="number">20</span>,<span class="number">45</span>,<span class="number">2</span>,<span class="number">32</span>])</span><br><span class="line"></span><br><span class="line">plt.scatter([<span class="number">10</span>,<span class="number">23</span>,<span class="number">48</span>,<span class="number">23</span>,<span class="number">42</span>],[<span class="number">20</span>,<span class="number">26</span>,<span class="number">30</span>,<span class="number">45</span>,<span class="number">10</span>])</span><br></pre></td></tr></table></figure>
+
+<h3 id="饼状图"><a href="#饼状图" class="headerlink" title="饼状图"></a>饼状图</h3><p>labels给每一块起名，autopct显示百分比</p>
+<p>plt.pie([100,200,300,400,500],labels=[‘A’,’B’,’C’,’D’,’E’],autopct=’%1.1f%%’)</p>
+<h3 id="直方图-反应的格式"><a href="#直方图-反应的格式" class="headerlink" title="直方图   反应的格式"></a>直方图   反应的格式</h3><p>plt.hist([100,200,300,400,100])</p>
+<p>如果参数里两个数一样，则y轴数为2</p>
+<p>#初始化一张画布</p>
+<p>plt.figure(figsize=(30,30))</p>
+<p>在每张图上加上这个  参数为坐标</p>
+<p>plt.subplot(221)</p>
+<h2 id="决策树："><a href="#决策树：" class="headerlink" title="决策树："></a>决策树：</h2><p>一般x轴称为特征，y轴称为标签   统称为数据集</p>
+<p>根据样本数据有无标签，分为监督学习和无监督学习</p>
+<p>监督学习就是有标签，无监督就是无标签</p>
+<p>监督学习里包含：回归，分类</p>
+<p>无监督包含：聚类</p>
+<p>回归：根据往年数据（比如房屋信息）预测未来的价格</p>
+<p>sklearn机器学习库  datasets数据集模块</p>
+<p>#导入数据集模块</p>
+<p>from sklearn import datasets</p>
+<p>#波士顿房价数据集</p>
+<p>house = datasets.load_boston()</p>
+<p>house</p>
+<p>打印的数据：data为数据  target是字段名  target为标签</p>
+<p>流程：数据–分析–数据预处理（统计学）–分割（37或28）–选择模型–训练模型</p>
+<p>波士顿房价预测：</p>
+<p>#导入数据集模块</p>
+<p>from sklearn import datasets</p>
+<p>#分割数据模块</p>
+<p>from sklearn.model_selection import train_test_split</p>
+<p>#决策树回归模型</p>
+<p>from sklearn.tree import DecisionTreeRegressor</p>
+<h3 id="波士顿房价数据集"><a href="#波士顿房价数据集" class="headerlink" title="波士顿房价数据集"></a>波士顿房价数据集</h3><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br></pre></td><td class="code"><pre><span class="line">house = datasets.load_boston()</span><br><span class="line"></span><br><span class="line">\<span class="comment">#取出特征数据</span></span><br><span class="line"></span><br><span class="line">dataset_x = house.data</span><br><span class="line"></span><br><span class="line">\<span class="comment">#取出对应的标签</span></span><br><span class="line"></span><br><span class="line">dataset_y = house.target</span><br><span class="line"></span><br><span class="line">\<span class="comment">#分割(训练集，测试集)</span></span><br><span class="line"></span><br><span class="line">train_x,test_x,train_y,test_y = train_test_split(dataset_x,dataset_y,test_size=<span class="number">0.2</span>)</span><br><span class="line"></span><br><span class="line">\<span class="comment"># print(train_x.shape)</span></span><br><span class="line"></span><br><span class="line">\<span class="comment"># print(test_x.shape)</span></span><br><span class="line"></span><br><span class="line">\<span class="comment">#训练模型（建模） 此处使用决策树回归模型</span></span><br><span class="line"></span><br><span class="line">dtreg = DecisionTreeRegressor()<span class="comment">#初始化</span></span><br><span class="line"></span><br><span class="line">dtreg.fit(train_x,train_y)</span><br><span class="line"></span><br><span class="line">\<span class="comment">#预测数据</span></span><br><span class="line"></span><br><span class="line">y_pre = dtreg.predict(test_x)</span><br><span class="line"></span><br><span class="line">print(train_y)  <span class="comment">#真实值</span></span><br><span class="line"></span><br><span class="line">print(y_pre)   <span class="comment">#预测值</span></span><br><span class="line"></span><br><span class="line">决策树的可视化：</span><br><span class="line"></span><br><span class="line"><span class="keyword">import</span> graphviz</span><br><span class="line"></span><br><span class="line"><span class="keyword">from</span> sklearn <span class="keyword">import</span> tree</span><br><span class="line"></span><br><span class="line">\<span class="comment">#将模型中节点信息导出</span></span><br><span class="line"></span><br><span class="line">dot_data = tree.export_graphviz(dtreg,out_file=<span class="literal">None</span>,filled=<span class="literal">True</span>)</span><br><span class="line"></span><br><span class="line">\<span class="comment">#将决策树节点信息加入到graphviz（绘制）</span></span><br><span class="line"></span><br><span class="line">graph = graphviz.Source(dot_data)</span><br><span class="line"></span><br><span class="line">\<span class="comment">#view导出数据并打开</span></span><br><span class="line"></span><br><span class="line">graph.render(<span class="string">'tree'</span>,view=<span class="literal">True</span>) </span><br><span class="line"></span><br><span class="line">回归模型评估：</span><br><span class="line"></span><br><span class="line">\<span class="comment">#回归模型的评估</span></span><br><span class="line"></span><br><span class="line">print(metrics.mean_squared_error(y_pred=y_pre,y_true=test_y))   <span class="comment">#测试集上的均方误差mse</span></span><br><span class="line"></span><br><span class="line">优化决策树：</span><br><span class="line"></span><br><span class="line">\<span class="comment">#优化决策树（集成算法：可以生成多颗决策树，通过将多个弱回归起组合成一个强回归器）</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">from</span> sklearn.ensemble <span class="keyword">import</span> AdaBoostRegressor</span><br><span class="line"></span><br><span class="line">\<span class="comment">#参数：弱回归器，最大弱回归器的数量</span></span><br><span class="line"></span><br><span class="line">dtreg = DecisionTreeRegressor(max_depth=<span class="number">5</span>) <span class="comment">#仅仅初始化模型，训练任务交给adaboostre</span></span><br><span class="line"></span><br><span class="line">adaboostre = AdaBoostRegressor(dtreg,n_estimators=<span class="number">400</span>)</span><br><span class="line"></span><br><span class="line">\<span class="comment">#训练数据</span></span><br><span class="line"></span><br><span class="line">adaboostre.fit(train_x,train_y)</span><br><span class="line"></span><br><span class="line">\<span class="comment">#预测</span></span><br><span class="line"></span><br><span class="line">y_pre = adaboostre.predict(test_x)</span><br><span class="line"></span><br><span class="line">print(test_y)</span><br><span class="line"></span><br><span class="line">print(y_pre)</span><br><span class="line"></span><br><span class="line">print(metrics.mean_squared_error(y_pred=y_pre,y_true=test_y))</span><br></pre></td></tr></table></figure>
+
+<h3 id="特征字典提取：jieba分词"><a href="#特征字典提取：jieba分词" class="headerlink" title="特征字典提取：jieba分词"></a>特征字典提取：jieba分词</h3><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> jieba</span><br><span class="line"></span><br><span class="line">\<span class="comment">#全模式  cut_all = True</span></span><br><span class="line"></span><br><span class="line">\<span class="comment">#标点符号视为空字符</span></span><br><span class="line"></span><br><span class="line">ret = jieba.lcut(<span class="string">'我叫苏杭,我来自宁夏,我现在喜欢python,我爱吃好吃的'</span>,cut_all=<span class="literal">True</span>)</span><br><span class="line"></span><br><span class="line">print(ret)</span><br><span class="line"></span><br><span class="line">\<span class="comment">#精确模式</span></span><br><span class="line"></span><br><span class="line">ret = jieba.lcut(<span class="string">'我叫苏杭,我来自宁夏,我现在喜欢python,我爱吃好吃的'</span>,cut_all=<span class="literal">False</span>)</span><br><span class="line"></span><br><span class="line">print(ret)</span><br><span class="line"></span><br><span class="line">\<span class="comment">#搜索引擎模式</span></span><br><span class="line"></span><br><span class="line">ret = jieba.lcut_for_search(<span class="string">'我叫苏杭,我来自宁夏,我现在喜欢python,我爱吃好吃的'</span>)</span><br><span class="line"></span><br><span class="line">print(ret)</span><br><span class="line"></span><br><span class="line">自定义词典：</span><br><span class="line"></span><br><span class="line"><span class="keyword">import</span> jieba</span><br><span class="line"></span><br><span class="line">\<span class="comment">#自定义词典</span></span><br><span class="line"></span><br><span class="line">\<span class="comment">#加载词典</span></span><br><span class="line"></span><br><span class="line">jieba.load_userdict(<span class="string">'1.txt'</span>)</span><br><span class="line"></span><br><span class="line">ret = jieba.lcut(<span class="string">'老王杀了人,被法院判处无妻徒刑并没收个人全部财产,堂葫芦'</span>,cut_all=<span class="literal">False</span>)</span><br><span class="line"></span><br><span class="line">ret</span><br><span class="line"></span><br><span class="line">文件特征提取：</span><br><span class="line"></span><br><span class="line">\<span class="comment"># 1.字典特征提取</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">from</span> sklearn.feature_extraction <span class="keyword">import</span> DictVectorizer</span><br><span class="line"></span><br><span class="line">dv = DictVectorizer()</span><br><span class="line"></span><br><span class="line">data = dv.fit_transform([&#123;<span class="string">'city'</span>:<span class="string">'beijing'</span>,<span class="string">'temperture'</span>:<span class="number">30</span>,<span class="string">'air'</span>:<span class="number">1</span>&#125;,</span><br><span class="line"></span><br><span class="line">​                        &#123;<span class="string">'city'</span>:<span class="string">'shanghai'</span>,<span class="string">'temperture'</span>:<span class="number">35</span>,<span class="string">'air'</span>:<span class="number">2</span>&#125;,</span><br><span class="line"></span><br><span class="line">​                        &#123;<span class="string">'city'</span>:<span class="string">'guangzhou'</span>,<span class="string">'temperture'</span>:<span class="number">33</span>,<span class="string">'air'</span>:<span class="number">3</span>&#125;])</span><br><span class="line"></span><br><span class="line">\<span class="comment">#相当于编码</span></span><br><span class="line"></span><br><span class="line">print(data.toarray())</span><br><span class="line"></span><br><span class="line">\<span class="comment">#相当于解码</span></span><br><span class="line"></span><br><span class="line">\<span class="comment"># print(dv.transform([&#123;'city':'beijing','temperture':30&#125;]))</span></span><br><span class="line"></span><br><span class="line">\<span class="comment"># print(dv.inverse_transform([[0,1,0,33]]))</span></span><br><span class="line"></span><br><span class="line"> </span><br><span class="line"></span><br><span class="line">\<span class="comment">#查看特征所对应的名字</span></span><br><span class="line"></span><br><span class="line">print(dv.get_feature_names())</span><br></pre></td></tr></table></figure>
+
+
+        
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="http://yoursite.com/62760.html" data-id="ck0dth5rn003l6gj4vh7i3h8w"
+         class="article-share-link">Share</a>
+      
+  <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/机器学习/">机器学习</a></li></ul>
+
+    </footer>
+
+  </div>
+
+  
+    
+  <nav class="article-nav">
+    
+      <a href="/38596.html" class="article-nav-link">
+        <strong class="article-nav-caption">Newer posts</strong>
+        <div class="article-nav-title">
+          
+            win10 安装xampp
+          
+        </div>
+      </a>
+    
+    
+      <a href="/54584.html" class="article-nav-link">
+        <strong class="article-nav-caption">Olde posts</strong>
+        <div class="article-nav-title">Tornado支付宝三方支付</div>
+      </a>
+    
+  </nav>
+
+
+  
+
+  
+    
+  
+
+</article>
+
+
+
+</section>
+  <footer class="footer">
+  <div class="outer">
+    <div class="float-right">
+      <ul class="list-inline">
+  
+    <li><i class="fe fe-smile-alt"></i> <span id="busuanzi_value_site_uv"></span></li>
+  
+</ul>
+    </div>
+    <ul class="list-inline">
+      <li>&copy; 2019 Suhang Blog</li>
+      <li>坚持原创技术分享，感谢您的支持和鼓励！</li><br>
+      <!-- <li>友情链接:<a style="text-decoration: none;" href="https://kangyuetao.github.io/">Mr.Kang's</a></li> -->
+      <!-- <li>Theme  <a href="https://github.com/zhwangart/hexo-theme-ocean">Ocean</a></li> -->
+    </ul>
+  </div>
+</footer>
+
+</main>
+
+<aside class="sidebar sidebar-specter">
+  
+    <iframe frameborder="no" border="0" marginwidth="0" marginheight="0" width=120 height=60 src="//music.163.com/outchain/player?type=0&id=2972494917&auto=1&height=32"></iframe>
+<button class="navbar-toggle"></button>
+<nav class="navbar">
+  
+    <div class="logo">
+      <a href="/"><img src="/images/hexo.svg" alt="Suhang Blog"></a>
+    </div>
+  
+  <ul class="nav nav-main">
+    
+      <li class="nav-item">
+        <a class="nav-item-link" href="/categories">Categories</a>
+      </li>
+    
+      <li class="nav-item">
+        <a class="nav-item-link" href="/archives">Archives</a>
+      </li>
+    
+      <li class="nav-item">
+        <a class="nav-item-link" href="/tags">Tags</a>
+      </li>
+    
+      <li class="nav-item">
+        <a class="nav-item-link" href="/about">About</a>
+      </li>
+    
+    <li class="nav-item">
+      <a class="nav-item-link nav-item-search" title="Search">
+        <i class="fe fe-search"></i>
+        Search
+      </a>
+    </li>
+  </ul>
+
+
+  
+</nav>
+<nav class="navbar navbar-bottom">
+  <ul class="nav">
+    <li class="nav-item">
+      <div class="totop" id="totop">
+  <i class="fe fe-rocket"></i>
+  
+</div>
+    </li>
+    <li class="nav-item">
+      
+        <a class="nav-item-link" target="_blank" href="/atom.xml" title="RSS Feed">
+          <i class="fe fe-feed"></i>
+        </a>
+      
+    </li>
+  </ul>
+</nav>
+<div class="search-form-wrap">
+  <div class="local-search local-search-plugin">
+  <input type="search" id="local-search-input" class="local-search-input" placeholder="Search...">
+  <div id="local-search-result" class="local-search-result"></div>
+</div>
+</div>
+  </aside>
+  <script src="/js/jquery-2.0.3.min.js"></script>
+<script src="/js/jquery.justifiedGallery.min.js"></script>
+<script src="/js/lazyload.min.js"></script>
+<script src="/js/busuanzi-2.3.pure.min.js"></script>
+
+  <script src="/fancybox/jquery.fancybox.min.js"></script>
+
+
+
+  <script src="/js/tocbot.min.js"></script>
+  <script>
+    // Tocbot_v4.7.0  http://tscanlin.github.io/tocbot/
+    tocbot.init({
+      tocSelector: '.tocbot',
+      contentSelector: '.article-entry',
+      headingSelector: 'h1, h2, h3, h4, h5, h6',
+      hasInnerContainers: true,
+      scrollSmooth: true,
+      positionFixedSelector: '.tocbot',
+      positionFixedClass: 'is-position-fixed',
+      fixedSidebarOffset: 'auto',
+    });
+  </script>
+
+
+<script src="/js/ocean.js"></script>
+
+</body>
+</html>

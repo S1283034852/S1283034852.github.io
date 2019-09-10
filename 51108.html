@@ -1,0 +1,242 @@
+<!DOCTYPE html>
+<html lang="en">
+<head><meta name="generator" content="Hexo 3.9.0">
+  <meta charset="utf-8">
+  
+  
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+  <title>
+    Hexo生成唯一文章链接 |
+    
+    Suhang Blog</title>
+  
+    <link rel="shortcut icon" href="/favicon.ico">
+  
+  <link rel="stylesheet" href="/css/style.css">
+  
+    <link rel="stylesheet" href="/fancybox/jquery.fancybox.min.css">
+  
+  <script src="/js/pace.min.js"></script>
+</head></html>
+<body>
+<main class="content">
+  <section class="outer">
+  <article id="post-Hexo生成唯一文章链接" class="article article-type-post" itemscope itemprop="blogPost" data-scroll-reveal>
+  
+  <div class="article-inner">
+    
+      <header class="article-header">
+        
+  
+    <h1 class="article-title" itemprop="name">
+      Hexo生成唯一文章链接
+    </h1>
+  
+  
+
+
+
+
+      </header>
+    
+
+    
+      <div class="article-meta">
+        <a href="/51108.html" class="article-date">
+  <time datetime="2016-07-25T00:00:00.000Z" itemprop="datePublished">2016-07-25</time>
+</a>
+        
+  <div class="article-category">
+    <a class="article-category-link" href="/categories/Hexo/">Hexo</a>
+  </div>
+
+      </div>
+    
+
+    
+      
+    <div class="tocbot"></div>
+
+
+
+
+
+    
+
+    <div class="article-entry" itemprop="articleBody">
+      
+        
+        
+          <h4 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h4><p>默认的，next生成文章链接：:year/:month/:day/:title，是按照年、月、日、标题来生成的<br>比如：<a href="https://leafjame.github.io/2019/08/12/hello-world/这样，如果文章标题是中文的话，URL链接也会是中文的" target="_blank" rel="noopener">https://leafjame.github.io/2019/08/12/hello-world/这样，如果文章标题是中文的话，URL链接也会是中文的</a><br><img src="/images/a.png" alt><br>复制后的链接是一大堆字符串编码</p>
+<p><a href="http://localhost:4000/2019/08/13/tech/hexo/Hexo%20Next%E4%B8%BB%E9%A2%98%E6%B7%BB%E5%8A%A0%E5%93%88%E6%9E%97%E6%91%87%E7%89%B9%E6%95%88/" target="_blank" rel="noopener">http://localhost:4000/2019/08/13/tech/hexo/Hexo%20Next%E4%B8%BB%E9%A2%98%E6%B7%BB%E5%8A%A0%E5%93%88%E6%9E%97%E6%91%87%E7%89%B9%E6%95%88/</a></p>
+<p>在这里说一个生成不变的URL链接呢?这就是我们要说的hexo-addrlink插件，简单易用</p>
+<h4 id="安装插件"><a href="#安装插件" class="headerlink" title="安装插件"></a>安装插件</h4><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">npm install hexo-addrlink --save</span><br></pre></td></tr></table></figure>
+
+<p>执行此命令可能会不成功，提示你缺少相应的依赖，比如babel-eslint、mini-css-extract-plugin、webpack-cli…<br>使用npm命令安装即可，比如npm install <a href="mailto:eslint@4.x" target="_blank" rel="noopener">eslint@4.x</a> babel-eslint@8 –save-dev</p>
+<h4 id="配置"><a href="#配置" class="headerlink" title="配置"></a>配置</h4><p>修改根目录站点配置文件件config.yml，改为：</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">permalink: :/addrlink.html   <span class="comment">#此处可以自己设置，也可以之间使用  :/addrlink</span></span><br><span class="line">addrlink:</span><br><span class="line">   alg: crc16   <span class="comment">#算法   crc16(default) and crc32</span></span><br><span class="line">   rep: hex     <span class="comment">#进制   dec(default)  and hex</span></span><br></pre></td></tr></table></figure>
+
+<p>生成的链接将会是这样的(官方样例):</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">crc16 &amp; hex</span><br><span class="line">https://post.zz173.com/posts/<span class="number">66</span>c8.html</span><br><span class="line"></span><br><span class="line">crc16 &amp; dec</span><br><span class="line">https://post.zz173.com/posts/<span class="number">65535.</span>html</span><br><span class="line">crc32 &amp; hex</span><br><span class="line">https://post.zz173.com/posts/<span class="number">8</span>ddf18fb.html</span><br><span class="line"></span><br><span class="line">crc32 &amp; dec</span><br><span class="line">https://post.zz173.com/posts/<span class="number">1690090958.</span>html</span><br></pre></td></tr></table></figure>
+
+<p>这样每篇文章就为改变链接地址。</p>
+
+        
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="http://yoursite.com/51108.html" data-id="ck0dth5py000u6gj4btm0dt9n"
+         class="article-share-link">Share</a>
+      
+  <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Hexo/">Hexo</a></li></ul>
+
+    </footer>
+
+  </div>
+
+  
+    
+  <nav class="article-nav">
+    
+      <a href="/43500.html" class="article-nav-link">
+        <strong class="article-nav-caption">Newer posts</strong>
+        <div class="article-nav-title">
+          
+            Hexo鼠标点击出现小桃心
+          
+        </div>
+      </a>
+    
+    
+      <a href="/14464.html" class="article-nav-link">
+        <strong class="article-nav-caption">Olde posts</strong>
+        <div class="article-nav-title">什么是docker</div>
+      </a>
+    
+  </nav>
+
+
+  
+
+  
+    
+  
+
+</article>
+
+
+
+</section>
+  <footer class="footer">
+  <div class="outer">
+    <div class="float-right">
+      <ul class="list-inline">
+  
+    <li><i class="fe fe-smile-alt"></i> <span id="busuanzi_value_site_uv"></span></li>
+  
+</ul>
+    </div>
+    <ul class="list-inline">
+      <li>&copy; 2019 Suhang Blog</li>
+      <li>坚持原创技术分享，感谢您的支持和鼓励！</li><br>
+      <!-- <li>友情链接:<a style="text-decoration: none;" href="https://kangyuetao.github.io/">Mr.Kang's</a></li> -->
+      <!-- <li>Theme  <a href="https://github.com/zhwangart/hexo-theme-ocean">Ocean</a></li> -->
+    </ul>
+  </div>
+</footer>
+
+</main>
+
+<aside class="sidebar sidebar-specter">
+  
+    <iframe frameborder="no" border="0" marginwidth="0" marginheight="0" width=120 height=60 src="//music.163.com/outchain/player?type=0&id=2972494917&auto=1&height=32"></iframe>
+<button class="navbar-toggle"></button>
+<nav class="navbar">
+  
+    <div class="logo">
+      <a href="/"><img src="/images/hexo.svg" alt="Suhang Blog"></a>
+    </div>
+  
+  <ul class="nav nav-main">
+    
+      <li class="nav-item">
+        <a class="nav-item-link" href="/categories">Categories</a>
+      </li>
+    
+      <li class="nav-item">
+        <a class="nav-item-link" href="/archives">Archives</a>
+      </li>
+    
+      <li class="nav-item">
+        <a class="nav-item-link" href="/tags">Tags</a>
+      </li>
+    
+      <li class="nav-item">
+        <a class="nav-item-link" href="/about">About</a>
+      </li>
+    
+    <li class="nav-item">
+      <a class="nav-item-link nav-item-search" title="Search">
+        <i class="fe fe-search"></i>
+        Search
+      </a>
+    </li>
+  </ul>
+
+
+  
+</nav>
+<nav class="navbar navbar-bottom">
+  <ul class="nav">
+    <li class="nav-item">
+      <div class="totop" id="totop">
+  <i class="fe fe-rocket"></i>
+  
+</div>
+    </li>
+    <li class="nav-item">
+      
+        <a class="nav-item-link" target="_blank" href="/atom.xml" title="RSS Feed">
+          <i class="fe fe-feed"></i>
+        </a>
+      
+    </li>
+  </ul>
+</nav>
+<div class="search-form-wrap">
+  <div class="local-search local-search-plugin">
+  <input type="search" id="local-search-input" class="local-search-input" placeholder="Search...">
+  <div id="local-search-result" class="local-search-result"></div>
+</div>
+</div>
+  </aside>
+  <script src="/js/jquery-2.0.3.min.js"></script>
+<script src="/js/jquery.justifiedGallery.min.js"></script>
+<script src="/js/lazyload.min.js"></script>
+<script src="/js/busuanzi-2.3.pure.min.js"></script>
+
+  <script src="/fancybox/jquery.fancybox.min.js"></script>
+
+
+
+  <script src="/js/tocbot.min.js"></script>
+  <script>
+    // Tocbot_v4.7.0  http://tscanlin.github.io/tocbot/
+    tocbot.init({
+      tocSelector: '.tocbot',
+      contentSelector: '.article-entry',
+      headingSelector: 'h1, h2, h3, h4, h5, h6',
+      hasInnerContainers: true,
+      scrollSmooth: true,
+      positionFixedSelector: '.tocbot',
+      positionFixedClass: 'is-position-fixed',
+      fixedSidebarOffset: 'auto',
+    });
+  </script>
+
+
+<script src="/js/ocean.js"></script>
+
+</body>
+</html>

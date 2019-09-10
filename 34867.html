@@ -1,0 +1,405 @@
+<!DOCTYPE html>
+<html lang="en">
+<head><meta name="generator" content="Hexo 3.9.0">
+  <meta charset="utf-8">
+  
+  
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+  <title>
+    django中的cookie与session |
+    
+    Suhang Blog</title>
+  
+    <link rel="shortcut icon" href="/favicon.ico">
+  
+  <link rel="stylesheet" href="/css/style.css">
+  
+    <link rel="stylesheet" href="/fancybox/jquery.fancybox.min.css">
+  
+  <script src="/js/pace.min.js"></script>
+</head></html>
+<body>
+<main class="content">
+  <section class="outer">
+  <article id="post-django中的cookie和session" class="article article-type-post" itemscope itemprop="blogPost" data-scroll-reveal>
+  
+  <div class="article-inner">
+    
+      <header class="article-header">
+        
+  
+    <h1 class="article-title" itemprop="name">
+      django中的cookie与session
+    </h1>
+  
+  
+
+
+
+
+      </header>
+    
+
+    
+      <div class="article-meta">
+        <a href="/34867.html" class="article-date">
+  <time datetime="2015-12-10T00:00:00.000Z" itemprop="datePublished">2015-12-10</time>
+</a>
+        
+  <div class="article-category">
+    <a class="article-category-link" href="/categories/Python/">Python</a> / <a class="article-category-link" href="/categories/Python/Django/">Django</a>
+  </div>
+
+      </div>
+    
+
+    
+      
+
+
+
+
+    
+
+    <div class="article-entry" itemprop="articleBody">
+      
+        
+        
+          <ol>
+<li><p><font color="redsa" size="5">cookie</font></p>
+<ol>
+<li><p><font color="reds" size="4">cookie的使用方法</font></p>
+<ol>
+<li><p><font color="Fuchsia" size="3">设置cookie</font></p>
+<ul>
+<li><p>from django.shortcuts import render,HttpResponse</p>
+<p>​    def set_cookie(request):</p>
+<p><font size="3">        在HTTPResponse部分设置COOKIE值</font></p>
+<p>​        cookie_reponse = HttpResponse(‘这是一个关于cookie的测试’)<br>​        cookie_reponse.set_cookie(‘test’,’hello cookie’)<br>​        return cookie_reponse</p>
+</li>
+</ul>
+</li>
+<li><p><font color="Fuchsia" size="3">获取cookie</font></p>
+<ul>
+<li><p>def get_cookie(request):</p>
+<p><font size="3">    获取cookie值，从request属性中的COOKIE属性中</font></p>
+<p>​    cookie_data = request.COOKIES.get(‘test’)<br>​    return HttpResponse(‘Cookie值为:%s’ % cookie_data)</p>
+</li>
+</ul>
+</li>
+<li><p><font color="Fuchsia" size="3">删除cookie</font></p>
+<ul>
+<li>def delete_cookie(request):<pre><code>response = HttpResponseRedirect(&apos;/check_cookie/&apos;)
+  response.delete_cookie(&apos;test&apos;)
+  return response</code></pre></li>
+</ul>
+</li>
+<li><p><font color="Fuchsia" size="3">怎么防止修改cookie</font></p>
+<ul>
+<li><p>使用set_signed_cookie这个函数进行防止用户在客户端进行修改(并不是直接给cookie加密)</p>
+</li>
+<li><p><font color="LightSalmon" size="3">代码：</font></p>
+<ul>
+<li><p>def check_salt_cookie(request):</p>
+<pre><code>try:
+      salt_cookie = request.get_signed_cookie(key=&apos;salt_cookie&apos;,salt=&apos;nice&apos;)
+  except KeyError: #获取不到该key值的Cookie
+      response = HttpResponse(&apos;正在设置一个salt Cookie值&apos;)
+      response.set_signed_cookie(key=&apos;salt_cookie&apos;,salt=&apos;nice&apos;,value=&apos;salt_cookie&apos;)</code></pre><p>​        return response<br>​    else: #获取到了对应key值，展示到新的HttpResonse中<br>​        return HttpResponse(‘获取到的salt Cookie值:%s’ % salt_cookie)</p>
+</li>
+<li><p><font color="lightred" size="3">注意：</font></p>
+<ul>
+<li>因为第一次访问时没有添加cookie值所以就会有keyerror的错误</li>
+<li>当有了这个错误你就设置cookie就可以了</li>
+<li>当你刷新页面的时候已经有了cookie值所以直接获取加盐的cookie</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+</ol>
+</li>
+</ol>
+</li>
+<li><p><font color="redsa" size="5">session</font></p>
+<ol>
+<li><p><font color="reds" size="4">session的使用方法</font></p>
+<ol>
+<li><p><font color="Fuchsia" size="3">使用流程</font></p>
+<ul>
+<li>客户端访问服务端，服务端为每一个客户端返回一个唯一的 sessionid ，比如 xxx 。</li>
+<li>客户端需要保持某些状态，比如维持登陆。那么服务端会构造一个 {sessionid: xxx } 类似这样的字典数据加到 Cookie 中发送给用户。注意此时，只是一个随机字符串，返回给客户端的内容并不会像之前一样包含实际数据。</li>
+<li>服务端在后台把返回给客户端的 xxx 字符串作为 key 值，对应需要保存的服务端数据为一个新的字典，存储在<br>服务器上，例如： {xxx : {id:1}}</li>
+<li><font color="lightred" size="3">注意：</font><ol>
+<li>默认存储在数据库的 Session 数据，是通过 base64 编码的，我们可以通过 Python 的<br> base64 模块下的 b64decode() 解码得到原始数据</li>
+</ol>
+</li>
+</ul>
+</li>
+<li><p><font color="Fuchsia" size="3">获取需要的session</font></p>
+<ul>
+<li>session_data = request.session.get(Key)</li>
+<li>session_data = request.session[Key]</li>
+<li><font color="lightred" size="3">注意：</font><ol>
+<li>在 Session 中获取对应值， get 方法获取时，如不存在该 Key 值，不会引发异常，返回 None<br>而第二种直接通过字典获取，如 Key 值不存在，引发 KeyErro</li>
+</ol>
+</li>
+</ul>
+</li>
+<li><p><font color="Fuchsia" size="3">删除session</font></p>
+<ul>
+<li>del request.seesion[Key]<ol>
+<li>删除对应session， Key 值不存在时，引发 KeyError</li>
+</ol>
+</li>
+<li>request.session.clear()<ol>
+<li>清空 Session 中的所有数据。这里客户端还会保留 sessionid<br>只不过在服务端 sessionid 对应的数据没有了。</li>
+</ol>
+</li>
+<li>request.session.flush()<ol>
+<li>直接删除当前客户端的的Seesion数据。这里不光服务端sessionid对应的数据没有了，客户端的<br>sessionid也会被删除</li>
+</ol>
+</li>
+</ul>
+<ol>
+<li><p><font color="LightCoral" size="3">代码：</font></p>
+<ul>
+<li><p>def delete_session(request):</p>
+<pre><code>if request.session.get(&apos;test_id&apos;):
+      del request.session[&apos;test_id&apos;]
+      return HttpResponse(&apos;Session被删了&apos;)
+  else:
+      return HttpResponse(&apos;目前没有任何需要删除的session&apos;)</code></pre></li>
+<li><p><font color="lightred" size="3">注意：</font></p>
+<ul>
+<li>这里使用 del request.session[Key] 的方式来进行 Session 的删除</li>
+<li>如果存在对应 test_id 的 Session 值则删除，反之返回一个字符串</li>
+</ul>
+</li>
+<li><p><font color="lightred" size="3">总结：</font></p>
+<ol>
+<li>使用的是 del 的针对性删除方式，这样不会将整个客户端的 session 删除掉</li>
+<li>使用 request.session.clear() ，只是清空了服务端 Session 中的数据，但是客户端的 Cookie 中还会保存sessionid ，只不过这个值对应的字符串所对应的用户数据是一个空</li>
+<li>使用 request.session.flush() ，那么客户端 Cookie 中保存的 sessionid 首先会被删除，其次通过<br>sessionid 值保存的用户数据也会被全部删除。</li>
+</ol>
+</li>
+</ul>
+</li>
+</ol>
+</li>
+<li><p><font color="Fuchsia" size="3">如何设置有效期设置cookie</font></p>
+<ol>
+<li><font color="LightCoral" size="4">设置Session的有效时间</font><ul>
+<li>value ：有效时间</li>
+<li>为整数时：将在value为秒单位之后过期</li>
+<li>为0时：将在用户关闭浏览器之后过期。</li>
+<li>为None时：使用全局过期的设置，默认为两个星期，14天。</li>
+<li>为datetime时：在这个指定时间后过期。</li>
+</ul>
+</li>
+<li><font color="LightCoral" size="4">返回距离过期还剩下的秒数</font><ul>
+<li><font color="LightCoral" size="3">代码：</font><ol>
+<li>request.session.get_expiry_age()</li>
+</ol>
+</li>
+</ul>
+</li>
+<li><font color="LightCoral" size="4">清除过期的 Session 会话</font><ul>
+<li><font color="LightCoral" size="3">代码：</font><ol>
+<li>request.session.clear_expired()</li>
+</ol>
+</li>
+</ul>
+</li>
+<li><font color="LightCoral" size="4">代码展示：</font><ul>
+<li>from django.shortcuts import render,HttpResponse<br>import datetime<br>def set_session(request):<pre><code>if request.session.get(&apos;test_id&apos;):
+    session_data = request.session.get(&apos;test_id&apos;)# 用户拿到的的session随机字符串
+    session_key = request.session.session_key # 获取客户端浏览器中的SessionID值
+    session_expire = request.session.get_expiry_age()
+    now = datetime.datetime.now()
+    expire_time = now + datetime.timedelta(seconds=session_expire)
+    response = &apos;&lt;div&gt;SessionID : %s&lt;/div&gt;&apos; % session_key + \
+               &apos;&lt;div&gt;Session : %s&lt;/div&gt;&apos; % session_data + \
+               &apos;&lt;div&gt;ExpireTime : %s&lt;/div&gt;&apos; % expire_time
+    return HttpResponse(response)
+else:
+    request.session[&apos;test_id&apos;] = &apos;TEST&apos;
+    request.session.set_expiry(None)
+    return HttpResponse(&apos;已设置好Session&apos;)</code></pre></li>
+<li><font color="lightred" size="3">注意：</font><ol>
+<li>用户在第一次访问时，会走 else 分支</li>
+<li>因为此时还没有任何服务端的 Session 及客户端的 Cookie 值设定</li>
+<li>所以我们通过 request.session[Key] 的方式来设置一个 Session 值，值为 TEST</li>
+<li>当用户第二次访问时将展示出所设置好的Session值及在客户端浏览器中存储的sessionid</li>
+</ol>
+</li>
+</ul>
+</li>
+</ol>
+</li>
+</ol>
+</li>
+</ol>
+</li>
+</ol>
+
+        
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="http://yoursite.com/34867.html" data-id="ck0dth5q500186gj4wndgfl8l"
+         class="article-share-link">Share</a>
+      
+  <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Django/">Django</a></li></ul>
+
+    </footer>
+
+  </div>
+
+  
+    
+  <nav class="article-nav">
+    
+      <a href="/59230.html" class="article-nav-link">
+        <strong class="article-nav-caption">Newer posts</strong>
+        <div class="article-nav-title">
+          
+            django uwsgi和nginx部署
+          
+        </div>
+      </a>
+    
+    
+      <a href="/59797.html" class="article-nav-link">
+        <strong class="article-nav-caption">Olde posts</strong>
+        <div class="article-nav-title">django中的数据库</div>
+      </a>
+    
+  </nav>
+
+
+  
+
+  
+    
+  
+
+</article>
+
+
+
+</section>
+  <footer class="footer">
+  <div class="outer">
+    <div class="float-right">
+      <ul class="list-inline">
+  
+    <li><i class="fe fe-smile-alt"></i> <span id="busuanzi_value_site_uv"></span></li>
+  
+</ul>
+    </div>
+    <ul class="list-inline">
+      <li>&copy; 2019 Suhang Blog</li>
+      <li>坚持原创技术分享，感谢您的支持和鼓励！</li><br>
+      <!-- <li>友情链接:<a style="text-decoration: none;" href="https://kangyuetao.github.io/">Mr.Kang's</a></li> -->
+      <!-- <li>Theme  <a href="https://github.com/zhwangart/hexo-theme-ocean">Ocean</a></li> -->
+    </ul>
+  </div>
+</footer>
+
+</main>
+
+<aside class="sidebar sidebar-specter">
+  
+    <iframe frameborder="no" border="0" marginwidth="0" marginheight="0" width=120 height=60 src="//music.163.com/outchain/player?type=0&id=2972494917&auto=1&height=32"></iframe>
+<button class="navbar-toggle"></button>
+<nav class="navbar">
+  
+    <div class="logo">
+      <a href="/"><img src="/images/hexo.svg" alt="Suhang Blog"></a>
+    </div>
+  
+  <ul class="nav nav-main">
+    
+      <li class="nav-item">
+        <a class="nav-item-link" href="/categories">Categories</a>
+      </li>
+    
+      <li class="nav-item">
+        <a class="nav-item-link" href="/archives">Archives</a>
+      </li>
+    
+      <li class="nav-item">
+        <a class="nav-item-link" href="/tags">Tags</a>
+      </li>
+    
+      <li class="nav-item">
+        <a class="nav-item-link" href="/about">About</a>
+      </li>
+    
+    <li class="nav-item">
+      <a class="nav-item-link nav-item-search" title="Search">
+        <i class="fe fe-search"></i>
+        Search
+      </a>
+    </li>
+  </ul>
+
+
+  
+</nav>
+<nav class="navbar navbar-bottom">
+  <ul class="nav">
+    <li class="nav-item">
+      <div class="totop" id="totop">
+  <i class="fe fe-rocket"></i>
+  
+</div>
+    </li>
+    <li class="nav-item">
+      
+        <a class="nav-item-link" target="_blank" href="/atom.xml" title="RSS Feed">
+          <i class="fe fe-feed"></i>
+        </a>
+      
+    </li>
+  </ul>
+</nav>
+<div class="search-form-wrap">
+  <div class="local-search local-search-plugin">
+  <input type="search" id="local-search-input" class="local-search-input" placeholder="Search...">
+  <div id="local-search-result" class="local-search-result"></div>
+</div>
+</div>
+  </aside>
+  <script src="/js/jquery-2.0.3.min.js"></script>
+<script src="/js/jquery.justifiedGallery.min.js"></script>
+<script src="/js/lazyload.min.js"></script>
+<script src="/js/busuanzi-2.3.pure.min.js"></script>
+
+  <script src="/fancybox/jquery.fancybox.min.js"></script>
+
+
+
+  <script src="/js/tocbot.min.js"></script>
+  <script>
+    // Tocbot_v4.7.0  http://tscanlin.github.io/tocbot/
+    tocbot.init({
+      tocSelector: '.tocbot',
+      contentSelector: '.article-entry',
+      headingSelector: 'h1, h2, h3, h4, h5, h6',
+      hasInnerContainers: true,
+      scrollSmooth: true,
+      positionFixedSelector: '.tocbot',
+      positionFixedClass: 'is-position-fixed',
+      fixedSidebarOffset: 'auto',
+    });
+  </script>
+
+
+<script src="/js/ocean.js"></script>
+
+</body>
+</html>

@@ -1,0 +1,249 @@
+<!DOCTYPE html>
+<html lang="en">
+<head><meta name="generator" content="Hexo 3.9.0">
+  <meta charset="utf-8">
+  
+  
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+  <title>
+    迭代器与生成器 |
+    
+    Suhang Blog</title>
+  
+    <link rel="shortcut icon" href="/favicon.ico">
+  
+  <link rel="stylesheet" href="/css/style.css">
+  
+    <link rel="stylesheet" href="/fancybox/jquery.fancybox.min.css">
+  
+  <script src="/js/pace.min.js"></script>
+</head></html>
+<body>
+<main class="content">
+  <section class="outer">
+  <article id="post-迭代器与生成器" class="article article-type-post" itemscope itemprop="blogPost" data-scroll-reveal>
+  
+  <div class="article-inner">
+    
+      <header class="article-header">
+        
+  
+    <h1 class="article-title" itemprop="name">
+      迭代器与生成器
+    </h1>
+  
+  
+
+
+
+
+      </header>
+    
+
+    
+      <div class="article-meta">
+        <a href="/2770.html" class="article-date">
+  <time datetime="2015-09-10T00:00:00.000Z" itemprop="datePublished">2015-09-10</time>
+</a>
+        
+  <div class="article-category">
+    <a class="article-category-link" href="/categories/Python/">Python</a>
+  </div>
+
+      </div>
+    
+
+    
+      
+    <div class="tocbot"></div>
+
+
+
+
+
+    
+
+    <div class="article-entry" itemprop="articleBody">
+      
+        
+        
+          <p>​    迭代器是访问集合元素的一种方式，是一个可以记住遍历位置的对象。它从第一个元素开始访问，直到所有的元素被访问完为止。迭代器只能前进不能后退。</p>
+<p>​    首先需要知道可迭代对象，迭代也可以叫做遍历，name也可以这样说：可以被for循环遍历的对象称之为可迭代对象。</p>
+<p>​    判断是否可迭代对象，python提供了isinstance()函数</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">fromcollectionsimportIterable</span><br><span class="line"></span><br><span class="line">print(isinstance([<span class="number">11</span>,<span class="number">22</span>],Iterable))</span><br><span class="line">print(isinstance(&#123;<span class="number">1</span>,<span class="number">2</span>,<span class="number">3</span>&#125;,Iterable))</span><br><span class="line">print(isinstance(<span class="string">"hahah"</span>,Iterable))</span><br><span class="line">print(isinstance(<span class="number">1234</span>,Iterable))</span><br></pre></td></tr></table></figure>
+
+<p>那么一个具有<strong>iter</strong>方法的对象，就是一个可迭代对象</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br></pre></td><td class="code"><pre><span class="line">classMyList(object):</span><br><span class="line">	<span class="function"><span class="keyword">def</span> <span class="title">__init__</span><span class="params">(self)</span>:</span></span><br><span class="line">		self.list=[]</span><br><span class="line">	<span class="function"><span class="keyword">def</span> <span class="title">add</span><span class="params">(self,item)</span>:</span></span><br><span class="line">		self.list.append(item)</span><br><span class="line">	<span class="function"><span class="keyword">def</span> <span class="title">__iter__</span><span class="params">(self)</span>:</span></span><br><span class="line">		<span class="keyword">pass</span></span><br><span class="line"></span><br><span class="line">my_list=MyList()</span><br><span class="line">my_list.add(<span class="number">1</span>)</span><br><span class="line">my_list.add(<span class="number">2</span>)</span><br><span class="line">my_list.add(<span class="number">3</span>)</span><br><span class="line">print(my_list.list)</span><br><span class="line"></span><br><span class="line">list = [<span class="number">11</span>,<span class="number">22</span>,<span class="number">33</span>,<span class="number">44</span>]</span><br><span class="line">a = iter(list)</span><br><span class="line">print(next(a))</span><br><span class="line">print(next(a))</span><br><span class="line">print(next(a))</span><br><span class="line">print(next(a))</span><br><span class="line">print(next(a))</span><br></pre></td></tr></table></figure>
+
+<p>当我们已经迭代完最后一个数据之后，在此调用next()函数会抛出StopIteration的异常，来告诉我们所有数据都已迭代完成，不用再执行next()函数了。</p>
+<p>python要求迭代器本身也是可迭代的，所以我们还要为迭代器实现<strong>iter</strong>方法，而<strong>iter</strong>方法要返回一个迭代器（本身）</p>
+<p>迭代器本质：一个实现iter方法和next方法的对象，就是迭代器。</p>
+<h3 id="迭代器实现斐波那契数列"><a href="#迭代器实现斐波那契数列" class="headerlink" title="迭代器实现斐波那契数列"></a>迭代器实现斐波那契数列</h3><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">Feibonaqi</span><span class="params">(object)</span>:</span></span><br><span class="line">	<span class="function"><span class="keyword">def</span> <span class="title">__init__</span><span class="params">(self,n)</span>:</span></span><br><span class="line">		self.num1=<span class="number">0</span><span class="comment">#第一个元素赋值</span></span><br><span class="line">		self.num2=<span class="number">1</span><span class="comment">#第二个元素赋值</span></span><br><span class="line">		self.n=n<span class="comment">#数列长度</span></span><br><span class="line">		self.index=<span class="number">0</span><span class="comment">#记录位置</span></span><br><span class="line"></span><br><span class="line">	<span class="function"><span class="keyword">def</span> <span class="title">__iter__</span><span class="params">(self)</span>:</span></span><br><span class="line">		<span class="keyword">return</span> self</span><br><span class="line"></span><br><span class="line">	<span class="function"><span class="keyword">def</span> <span class="title">__next__</span><span class="params">(self)</span>:</span></span><br><span class="line">		<span class="keyword">if</span> self.index &lt; self.n:</span><br><span class="line">			num=self.num1</span><br><span class="line">            self.num1,self.num2 =s elf.num2,self.num2+self.num1</span><br><span class="line">			self.index += <span class="number">1</span></span><br><span class="line">			<span class="keyword">return</span> num</span><br><span class="line">		<span class="keyword">else</span>:</span><br><span class="line">			<span class="keyword">raise</span> StopIteration<span class="comment">#停止迭代</span></span><br><span class="line"></span><br><span class="line">if__name__==<span class="string">'__main__'</span>:</span><br><span class="line">	fei=Feibonaqi(<span class="number">10</span>)</span><br><span class="line">	<span class="comment">#foriinfei:</span></span><br><span class="line">		<span class="comment">#print(i,end="")</span></span><br><span class="line">	<span class="comment">#第二种强转方法</span></span><br><span class="line">	print(list(fei))</span><br></pre></td></tr></table></figure>
+
+<h1 id="生成器"><a href="#生成器" class="headerlink" title="生成器"></a>生成器</h1><p>生成器是一种特殊的迭代器，它可以生成一系列数据用来迭代.</p>
+<p>列表推导式：</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">G=[x <span class="keyword">for</span> x <span class="keyword">in</span> range(<span class="number">4</span>)]</span><br><span class="line">print(G)</span><br><span class="line">[<span class="number">0</span>, <span class="number">1</span>, <span class="number">2</span>, <span class="number">3</span>]</span><br><span class="line"></span><br><span class="line"><span class="string">'''而使用小括号已经是一个生成器'''</span></span><br><span class="line">L=(x <span class="keyword">for</span> x <span class="keyword">in</span> range(<span class="number">4</span>))</span><br><span class="line">print(L)</span><br><span class="line">&lt;generator object &lt;genexpr&gt; at <span class="number">0x000001F50F5F6C00</span>&gt;</span><br></pre></td></tr></table></figure>
+
+<h3 id="生成器实现斐波那契数列"><a href="#生成器实现斐波那契数列" class="headerlink" title="生成器实现斐波那契数列"></a>生成器实现斐波那契数列</h3><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">fei</span><span class="params">(n)</span>:</span></span><br><span class="line">	num1,num2=<span class="number">0</span>,<span class="number">1</span></span><br><span class="line">	current=<span class="number">0</span></span><br><span class="line">	<span class="keyword">while</span> current&lt;n:</span><br><span class="line">		num=num1</span><br><span class="line">		num1,num2=num2,num2+num1</span><br><span class="line">		current+=<span class="number">1</span></span><br><span class="line">		<span class="keyword">yield</span> num</span><br><span class="line"></span><br><span class="line">if__name__==<span class="string">'__main__'</span>:</span><br><span class="line">	<span class="keyword">for</span> i <span class="keyword">in</span> fei(<span class="number">10</span>):</span><br><span class="line">		print(i,end=<span class="string">""</span>)</span><br></pre></td></tr></table></figure>
+
+<p>使用yield关键字的函数不再是函数，而是生成器（使用了yield的函数就是生成器）</p>
+<p>yield的两个特点：</p>
+<p>1、保存当前运行状态（断点），然后暂停执行，即将生成器（函数）挂起</p>
+<p>2、将yield关键字后面表达式的值作为返回值返回，此时可以理解为起到了return的作用</p>
+<p><font color="red" size="6px">迭代器与生成器的区别</font></p>
+<p>生成器能够做到迭代器能做的所有事，而且因为自动创建了iter和next方法，生成器显得特别简洁，而且生成器也是高效的，使用生成器表达式取代列表解析式可以节省内存，当生成器终结时，还会自动抛出Stopiteration异常</p>
+
+        
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="http://yoursite.com/2770.html" data-id="ck0dth5qr002h6gj477ekgjql"
+         class="article-share-link">Share</a>
+      
+  <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Python/">Python</a></li></ul>
+
+    </footer>
+
+  </div>
+
+  
+    
+  <nav class="article-nav">
+    
+      <a href="/46132.html" class="article-nav-link">
+        <strong class="article-nav-caption">Newer posts</strong>
+        <div class="article-nav-title">
+          
+            单例模式
+          
+        </div>
+      </a>
+    
+    
+  </nav>
+
+
+  
+
+  
+    
+  
+
+</article>
+
+
+
+</section>
+  <footer class="footer">
+  <div class="outer">
+    <div class="float-right">
+      <ul class="list-inline">
+  
+    <li><i class="fe fe-smile-alt"></i> <span id="busuanzi_value_site_uv"></span></li>
+  
+</ul>
+    </div>
+    <ul class="list-inline">
+      <li>&copy; 2019 Suhang Blog</li>
+      <li>坚持原创技术分享，感谢您的支持和鼓励！</li><br>
+      <!-- <li>友情链接:<a style="text-decoration: none;" href="https://kangyuetao.github.io/">Mr.Kang's</a></li> -->
+      <!-- <li>Theme  <a href="https://github.com/zhwangart/hexo-theme-ocean">Ocean</a></li> -->
+    </ul>
+  </div>
+</footer>
+
+</main>
+
+<aside class="sidebar sidebar-specter">
+  
+    <iframe frameborder="no" border="0" marginwidth="0" marginheight="0" width=120 height=60 src="//music.163.com/outchain/player?type=0&id=2972494917&auto=1&height=32"></iframe>
+<button class="navbar-toggle"></button>
+<nav class="navbar">
+  
+    <div class="logo">
+      <a href="/"><img src="/images/hexo.svg" alt="Suhang Blog"></a>
+    </div>
+  
+  <ul class="nav nav-main">
+    
+      <li class="nav-item">
+        <a class="nav-item-link" href="/categories">Categories</a>
+      </li>
+    
+      <li class="nav-item">
+        <a class="nav-item-link" href="/archives">Archives</a>
+      </li>
+    
+      <li class="nav-item">
+        <a class="nav-item-link" href="/tags">Tags</a>
+      </li>
+    
+      <li class="nav-item">
+        <a class="nav-item-link" href="/about">About</a>
+      </li>
+    
+    <li class="nav-item">
+      <a class="nav-item-link nav-item-search" title="Search">
+        <i class="fe fe-search"></i>
+        Search
+      </a>
+    </li>
+  </ul>
+
+
+  
+</nav>
+<nav class="navbar navbar-bottom">
+  <ul class="nav">
+    <li class="nav-item">
+      <div class="totop" id="totop">
+  <i class="fe fe-rocket"></i>
+  
+</div>
+    </li>
+    <li class="nav-item">
+      
+        <a class="nav-item-link" target="_blank" href="/atom.xml" title="RSS Feed">
+          <i class="fe fe-feed"></i>
+        </a>
+      
+    </li>
+  </ul>
+</nav>
+<div class="search-form-wrap">
+  <div class="local-search local-search-plugin">
+  <input type="search" id="local-search-input" class="local-search-input" placeholder="Search...">
+  <div id="local-search-result" class="local-search-result"></div>
+</div>
+</div>
+  </aside>
+  <script src="/js/jquery-2.0.3.min.js"></script>
+<script src="/js/jquery.justifiedGallery.min.js"></script>
+<script src="/js/lazyload.min.js"></script>
+<script src="/js/busuanzi-2.3.pure.min.js"></script>
+
+  <script src="/fancybox/jquery.fancybox.min.js"></script>
+
+
+
+  <script src="/js/tocbot.min.js"></script>
+  <script>
+    // Tocbot_v4.7.0  http://tscanlin.github.io/tocbot/
+    tocbot.init({
+      tocSelector: '.tocbot',
+      contentSelector: '.article-entry',
+      headingSelector: 'h1, h2, h3, h4, h5, h6',
+      hasInnerContainers: true,
+      scrollSmooth: true,
+      positionFixedSelector: '.tocbot',
+      positionFixedClass: 'is-position-fixed',
+      fixedSidebarOffset: 'auto',
+    });
+  </script>
+
+
+<script src="/js/ocean.js"></script>
+
+</body>
+</html>
